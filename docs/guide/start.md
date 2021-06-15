@@ -8,7 +8,6 @@ sidebarDepth: 0
 日期选择面板
 
 - **继承:**
-  - [extend-base.js](extend-base.md)
 
 ## 属性
 

@@ -52,9 +52,3 @@ interface FormItemEventArg{
 ### 普通属性
 
 如果让组件属性与外部进行数据双向绑定，需要使用`sync`修饰符进行配置，配置到外部变量`:foo.sync="fooVal"`，可以是外部对象中的属性`:foo.sync="fooVal.p1"`。
-
-<ClientOnly>
-<LazyWrapper com="SyncPropDeme"></LazyWrapper>
-</ClientOnly>
-
-<<< @/docs/.vuepress/components/SyncPropDeme.vue {7,18}

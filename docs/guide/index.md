@@ -8,7 +8,6 @@ sidebarDepth: 0
 基础组件 Mixin
 
 - **继承:**
-  - [extend-base.js](extend-base.md)
 
 ## 插槽
 
