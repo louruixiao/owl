@@ -6,12 +6,13 @@ module.exports = {
 	themeConfig: {
 		repo: 'https://github.com/louruixiao/owl.git',
 		docsDir: 'docs',
-
+		locals: [],
 		editLinks: true,
 		editLinkText: 'Edit this page on GitHub',
 		lastUpdated: 'Last Updated',
 		algolia: {
-			apiKey: 'VQ9H59WC8X',
+			appId: 'VQ9H59WC8X',
+			apiKey: '20da7e9a322b8eb2b5f42e378bfbdebc',
 			indexName: 'yiird_owl'
 		},
 		nav: [
