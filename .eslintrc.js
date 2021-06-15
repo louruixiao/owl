@@ -11,13 +11,7 @@ module.exports = {
 		ecmaVersion: 2020,
 		sourceType: 'module'
 	},
-	extends: [
-		'eslint:recommended',
-		'plugin:vue/vue3-recommended',
-		'plugin:@typescript-eslint/recommended',
-		'prettier/@typescript-eslint',
-		'plugin:prettier/recommended'
-	],
+	extends: ['eslint:recommended', 'plugin:vue/vue3-recommended', 'plugin:@typescript-eslint/recommended', 'prettier/@typescript-eslint', 'plugin:prettier/recommended'],
 	rules: {
 		'no-console': 'warn',
 		'no-debugger': 'warn'

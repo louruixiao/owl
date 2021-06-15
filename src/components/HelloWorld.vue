@@ -14,7 +14,6 @@
 		(if using
 		<code>&lt;script setup&gt;</code>)
 	</p>
-
 	<p>
 		See
 		<code>README.md</code> for more information.

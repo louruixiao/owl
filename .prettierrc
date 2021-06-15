@@ -1,7 +1,6 @@
 {
 	"printWidth": 260,
-	"tabWidth": 4,
-	"tabs": true,
+	"tabWidth": 1,
 	"semi": true,
 	"singleQuote": true,
 	"quoteProps": "as-needed",
