@@ -68,10 +68,6 @@ function getGuideSidebar() {
 function getExampleSidebar() {
 	return [
 		{
-			text: 'xx',
-			children: [{ text: 'xx', link: '/' }]
-		},
-		{
 			text: '基础',
 			children: [{ text: '按钮', link: '/examples/button' }]
 		}
