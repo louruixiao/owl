@@ -11,7 +11,7 @@ module.exports = {
 		editLinkText: 'Edit this page on GitHub',
 		lastUpdated: 'Last Updated',
 		algolia: {
-			apiKey: '20da7e9a322b8eb2b5f42e378bfbdebc',
+			apiKey: 'VQ9H59WC8X',
 			indexName: 'yiird_owl'
 		},
 		nav: [
