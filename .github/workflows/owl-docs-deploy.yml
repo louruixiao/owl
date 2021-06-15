@@ -9,6 +9,7 @@ on:
   branches: [main]
   paths:
    - 'docs/**'
+   - '.github/workflows/owl-docs-deploy.yml'
  pull_request:
   branches: [main]
  workflow_dispatch:
