@@ -1,0 +1,35 @@
+# <%= component.name %>
+
+<%= component.description %> 
+
+<% if (stable) { %>
+## 插槽
+
+<div class="slots-table">
+
+<%- stable %>
+    
+</div>
+<% } %>
+
+<% if (ptable) { %>
+## 属性
+
+<div class="props-table">
+
+<%- ptable %>
+
+</div>
+<% } %>
+
+<% if (mtable) { %>
+## 方法
+
+<div class="methods-table">
+
+<%- mtable %>
+
+</div>
+<% } %>
+
+

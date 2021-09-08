@@ -1,0 +1,89 @@
+@function breakpoint-min($name, $breakpoints: $--breakpoints) {
+	$min: map-get($breakpoints, $name);
+	@return if($min != 0, $min, null);
+}
+
+@function breakpoint-max($name, $breakpoints: $--breakpoints) {
+	$max: map-get($breakpoints, $name);
+	@return if($max and $max > 0, $max - 0.02, null);
+}
+
+@mixin media-breakpoint-up($name, $breakpoints: $--breakpoints) {
+	$min: breakpoint-min($name, $breakpoints);
+	@if $min {
+		@media (min-width: $min) {
+			@content;
+		}
+	} @else {
+		@content;
+	}
+}
+
+@mixin media-breakpoint-down($name, $breakpoints: $--breakpoints) {
+	$max: breakpoint-max($name, $breakpoints);
+	@if $max {
+		@media (max-width: $max) {
+			@content;
+		}
+	} @else {
+		@content;
+	}
+}
+
+@function breakpoint-next($name, $breakpoints: $--breakpoints, $breakpoint-names: map-keys($breakpoints)) {
+	$n: index($breakpoint-names, $name);
+	@if not $n {
+		@error "breakpoint `#{$name}` not found in `#{$breakpoints}`";
+	}
+	@return if($n < length($breakpoint-names), nth($breakpoint-names, $n + 1), null);
+}
+
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: $--breakpoints) {
+	$min: breakpoint-min($lower, $breakpoints);
+	$max: breakpoint-max($upper, $breakpoints);
+
+	@if $min != null and $max != null {
+		@media (min-width: $min) and (max-width: $max) {
+			@content;
+		}
+	} @else if $max == null {
+		@include media-breakpoint-up($lower, $breakpoints) {
+			@content;
+		}
+	} @else if $min == null {
+		@include media-breakpoint-down($upper, $breakpoints) {
+			@content;
+		}
+	}
+}
+
+@mixin everySpan($count, $gutter) {
+	$spare: math.div($count, $count);
+
+	@each $breakpoint in map-keys($--breakpoints) {
+		$next: breakpoint-next($breakpoint);
+		@include media-breakpoint-between($breakpoint, $next) {
+			@for $i from 0 to $count {
+				$span: $i + 1;
+				$spanPer: math.div($span, $count);
+				& {
+					@include m($span) {
+						width: calc(#{$spanPer * 100}% - (#{$spanPer} + 1) * #{$gutter});
+						min-width: calc(#{map-get($--breakpoints, $breakpoint)} * #{$spanPer} - (#{$spanPer} + 1) * #{$gutter});
+					}
+					@if $breakpoint == xs {
+						@include m($span) {
+							width: calc(100% - (2 * #{$gutter}));
+							min-width: calc(100% - (2 * #{$gutter}));
+						}
+					} @else {
+						@include m($breakpoint + '-' + $span) {
+							width: calc(#{$spanPer * 100}% - (#{$spanPer} + 1) * #{$gutter});
+							min-width: calc(#{map-get($--breakpoints, $breakpoint)} * #{$spanPer} - (#{$spanPer} + 1) * #{$gutter});
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,14 +1,32 @@
-import { forEach } from 'lodash';
-import { App, Plugin } from 'vue';
-import * as components from '@owl/themes/default';
+import { dom, IconDefinition, IconPack, library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import * as components from '@owl/themes/skeleton';
+import { OButton, OIcon } from '@owl/themes/skeleton';
+import { forEach } from 'lodash-es';
+import { App } from 'vue';
 
-export const Owl: Plugin = {
-	install(app: App) {
-		forEach(components, (component, name) => {
-			app.component(name, component);
-		});
-	}
+const install = (app: App): void => {
+	app.component('FontAwesomeIcon', FontAwesomeIcon);
+	forEach(components, (component, name) => {
+		app.component(name, component);
+	});
+	dom.watch();
 };
 
-export type { PrefabDefine, OwlComponentInstance, OwlWithOptions, OButtonInstance, ButtonExpose } from '@owl/core/types';
+const addIcon = (...definitions: (IconDefinition | IconPack)[]): void => {
+	library.add(...definitions);
+};
+
+export type { OButtonInstance as OwlButtonInstance, OIconInstance as OwlIconInstance } from '@owl/define';
 export { addClass } from '@owl/utils/dom';
+export { install, addIcon };
+
+export const Owl = {
+	install
+};
+declare module 'vue' {
+	export interface GlobalComponents {
+		OButton: typeof OButton;
+		OIcon: typeof OIcon;
+	}
+}

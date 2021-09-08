@@ -15,9 +15,9 @@ features:
 footer: MIT Licensed | Copyright © 2019-present Gavin Lou
 ---
 
-```sh
+```shell
 # npm
-npm i -S @yiird/gavin-ui-lib
+npm i -S @yiird/owl
 # yarn
-yarn add @yiird/gavin-ui-lib
+yarn add @yiird/owl
 ```

@@ -1,18 +1,25 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "esnext",
+		"module": "commonjs",
 		"moduleResolution": "node",
 		"strict": true,
 		"jsx": "preserve",
 		"sourceMap": true,
 		"resolveJsonModule": true,
-		"lib": ["esnext", "dom"],
-		"types": ["vite/client"],
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true,
+		"lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+		"types": ["vite/client", "node", "webpack"],
+		"typeRoots": ["src/types"],
 		"baseUrl": ".",
 		"paths": {
 			"@owl": ["src/index"],
-			"@owl/*": ["src/*"]
+			"@owl/*": ["src/*"],
+			"@types": ["src/types/index"],
+			"@types/*": ["src/types/*"],
+			"@yiird/owl": ["src/index"]
 		}
 	},
 	"include": [
@@ -24,8 +31,13 @@
 		"src-example/**/*.d.ts",
 		"src-example/**/*.tsx",
 		"src-example/**/*.vue",
+		"docs/**/*.ts",
+		"docs/**/*.d.ts",
+		"docs/**/*.tsx",
+		"docs/**/*.vue",
 		"tests/**/*.ts",
-		"tests/**/*.tsx"
+		"tests/**/*.tsx",
+		"**/wepack.*.ts"
 	],
-	"exclude": ["node_modules", "example"]
+	"exclude": ["node_modules", "build"]
 }

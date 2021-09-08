@@ -4,7 +4,7 @@ sidebarDepth: 2
 
 ## 安装
 
-```sh
+```shell
 # npm 安装
 npm i --save gavin-ui-element
 # yarn 安装

@@ -1,0 +1,80 @@
+:root {
+	--gn-color-default: #737f8c;
+	--gn-color-primary: #409eff;
+	--gn-color-success: #72d742;
+	--gn-color-warning: #f09f4c;
+	--gn-color-error: #f76969;
+
+	--gn-font-size: 1rem;
+	--gn-font-size-largest: 1.2rem;
+	--gn-font-size-larger: 1.1rem;
+	--gn-font-size-min: 0.9rem;
+
+	--gn-form-item-height: 2.5rem;
+
+	--gn-color-default-darker: #333e49;
+	--gn-color-default-lighter: #abb8c6;
+	--gn-color-default-lightest: #abb8c680;
+	--gn-color-primary-darker: #005bb2;
+	--gn-color-primary-lighter: #8cd9ff;
+	--gn-color-primary-lightest: #8cd9ff80;
+	--gn-color-success-darker: #148c00;
+	--gn-color-success-lighter: #b1ff7e;
+	--gn-color-success-lightest: #b1ff7e80;
+	--gn-color-warning-darker: #9e5a00;
+	--gn-color-warning-lighter: #ffda84;
+	--gn-color-warning-lightest: #ffda8480;
+	--gn-color-error-darker: #a4192b;
+	--gn-color-error-lighter: #ffa5a0;
+	--gn-color-error-lightest: #ffa5a080;
+	--gn-color-font-darker: #4c4e4f;
+	--gn-color-font: #6a6c6e;
+	--gn-color-font-lighter: #989b9c;
+	--gn-color-font-lightest: #b0b3b4;
+	--gn-color-border-darker: #626465;
+	--gn-color-border: #bfc1c3;
+	--gn-color-border-lighter: #bfc1c380;
+	--gn-color-border-lightest: #bfc1c333;
+}
+
+html,
+body {
+	font-size: 13px; /*10 ÷ 16 × 100% = 62.5%*/
+}
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+	scrollbar-width: thin;
+}
+
+body::-webkit-scrollbar-track,
+div::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb {
+	background-color: darkgrey;
+}
+
+@import './mixins/config';
+@import './mixins/base';
+@import './mixins/func';
+@import './mixins/form';
+@import './mixins/button';
+@import './mixins/grid-system';
+
+@import './var';
+@import './common/balloon-css/balloon';
+@import './common/animated';
+
+@import './button';
+@import './grid-system';
+@import './layout';

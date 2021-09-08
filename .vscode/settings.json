@@ -1,6 +1,18 @@
 {
 	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": true
+	},
 	"files.autoSave": "onWindowChange",
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"[vue]": {
+		"editor.defaultFormatter": "johnsoncodehk.volar"
+	},
+	"[scss]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"search.exclude": {
+		"**/node_modules": false
+	}
 }

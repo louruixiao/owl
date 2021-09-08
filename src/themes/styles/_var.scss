@@ -1,0 +1,130 @@
+/* @font-face {font-family: source-code-pro;src: url('../font/DIN_Condensed_Bold.ttf');} */
+/* 字体
+--------------------------------*/
+$fa-css-prefix: 'fa';
+
+$--base-font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+/* 数据可视化 -- 工作台
+--------------------------------*/
+$--work-bench-backgroud-color: #fff;
+$--work-bench-tool-width: 30%;
+$--work-bench-charts-lib-width: 30%;
+
+/* 按钮
+--------------------------------*/
+$--button-font-family: $--base-font-family;
+$--button-normal-size: 2rem;
+$--button-normal-font-size: 1rem;
+$--button-normal-radus: 3px;
+
+$--button-size-map: (
+	2xs: (
+		$--button-normal-size * 0.6,
+		0.9rem,
+		#{0 2px 2px 2px}
+	),
+	xs: (
+		$--button-normal-size * 0.7,
+		0.9rem,
+		#{0px $--button-normal-size * 0.2}
+	),
+	sm: (
+		$--button-normal-size * 0.8,
+		1rem,
+		#{0px $--button-normal-size * 0.3}
+	),
+	md: (
+		$--button-normal-size,
+		1rem,
+		#{0px $--button-normal-size * 0.5}
+	),
+	lg: (
+		$--button-normal-size * 1.5,
+		1.5rem,
+		#{0px $--button-normal-size * 1}
+	),
+	xl: (
+		$--button-normal-size * 2,
+		2rem,
+		#{0px $--button-normal-size * 1.5}
+	),
+	2xl: (
+		$--button-normal-size * 3,
+		3rem,
+		#{0px $--button-normal-size * 2}
+	)
+);
+
+//button 颜色
+//边框颜色 背景色 字体色 字体激活状态颜色
+
+/* 面板
+--------------------------------*/
+$--panel-header-height: 2.5rem;
+$--panel-footer-height: 2rem;
+
+/* 日期控件
+--------------------------------*/
+$--date-panel-width: 228px;
+$--date-panel-day-width: 30px;
+$--date-panel-day-line-height: 20px;
+
+/* 色彩（新）
+--------------------------------*/
+//状态
+$--gn-color-default: var(--gn-color-default);
+$--gn-color-primary: var(--gn-color-primary);
+$--gn-color-success: var(--gn-color-success);
+$--gn-color-warning: var(--gn-color-warning);
+$--gn-color-error: var(--gn-color-error);
+
+$--gn-color-default-darker: var(--gn-color-default-darker);
+$--gn-color-default-lighter: var(--gn-color-default-lighter);
+$--gn-color-default-lightest: var(--gn-color-default-lightest);
+$--gn-color-primary-darker: var(--gn-color-primary-darker);
+$--gn-color-primary-lighter: var(--gn-color-primary-lighter);
+$--gn-color-primary-lightest: var(--gn-color-primary-lightest);
+$--gn-color-success-darker: var(--gn-color-success-darker);
+$--gn-color-success-lighter: var(--gn-color-success-lighter);
+$--gn-color-success-lightest: var(--gn-color-success-lightest);
+$--gn-color-warning-darker: var(--gn-color-warning-darker);
+$--gn-color-warning-lighter: var(--gn-color-warning-lighter);
+$--gn-color-warning-lightest: var(--gn-color-warning-lightest);
+$--gn-color-error-darker: var(--gn-color-error-darker);
+$--gn-color-error-lighter: var(--gn-color-error-lighter);
+$--gn-color-error-lightest: var(--gn-color-error-lightest);
+$--gn-color-font-darker: var(--gn-color-font-darker);
+$--gn-color-font: var(--gn-color-font);
+$--gn-color-font-lighter: var(--gn-color-font-lighter);
+$--gn-color-font-lightest: var(--gn-color-font-lightest);
+$--gn-color-border-darker: var(--gn-color-border-darker);
+$--gn-color-border: var(--gn-color-border);
+$--gn-color-border-lighter: var(--gn-color-border-lighter);
+$--gn-color-border-lightest: var(--gn-color-border-lightest);
+
+/* 字体大小（新）
+--------------------------------*/
+$--gn-font-size-largest: var(--gn-font-size-largest);
+$--gn-font-size-larger: var(--gn-font-size-larger);
+$--gn-font-size: var(--gn-font-size);
+$--gn-font-size-min: var(--gn-font-size-min);
+
+/* 按钮（新）
+--------------------------------*/
+$--button-color-map: (
+	default: --gn-color-default,
+	primary: --gn-color-primary,
+	success: --gn-color-success,
+	warning: --gn-color-warning,
+	danger: --gn-color-error
+);
+
+$--breakpoints: (
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1400px
+) !default;

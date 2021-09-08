@@ -22,13 +22,19 @@ module.exports = {
 				nav: [
 					{ text: '指南', link: '/guide/', activeMatch: '^/$|^/guide/' },
 					{
+						text: '组件',
+						link: '/components/OButton',
+						activeMatch: '^/components/'
+					},
+					{
 						text: '样例',
 						link: '/examples/',
-						activeMatch: '^/$|^/examples/'
+						activeMatch: '^/examples/'
 					}
 				],
 				sidebar: {
 					'/guide/': getGuideSidebar(),
+					'/components/': getComponentsSidebar(),
 					'/examples/': getExampleSidebar()
 				}
 			}
@@ -48,10 +54,8 @@ module.exports = {
 					}
 				],
 				sidebar: {
-					'/zh/': [
-					],
-					'/zh/nested/': [
-					]
+					'/zh/': [],
+					'/zh/nested/': []
 				}
 			} */
 		}
@@ -61,7 +65,21 @@ function getGuideSidebar() {
 	return [
 		{
 			text: '教程',
-			children: [{ text: '开始', link: '/guide/start' }]
+			children: [
+				{ text: '开始', link: '/guide/start' },
+				{ text: '图标', link: '/guide/icon' }
+			]
+		}
+	];
+}
+function getComponentsSidebar() {
+	return [
+		{
+			text: '基础组件',
+			children: [
+				{ text: 'OButton', link: '/components/OButton' },
+				{ text: 'OIcon', link: '/components/OIcon' }
+			]
 		}
 	];
 }
@@ -69,7 +87,11 @@ function getExampleSidebar() {
 	return [
 		{
 			text: '基础',
-			children: [{ text: '按钮', link: '/examples/button' }]
+			children: [
+				{ text: '按钮', link: '/examples/button' },
+				{ text: 'OIcon', link: '/examples/icon' },
+				{ text: '布局', link: '/examples/layout' }
+			]
 		}
 	];
 }

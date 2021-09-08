@@ -1,0 +1,77 @@
+@import './mixins/config';
+@import './mixins/base';
+@import './mixins/func';
+@import './mixins/button';
+@import './var';
+
+@include b(button) {
+	color: #666;
+	background-color: #eee;
+	border-color: #eee;
+	opacity: 0.9;
+	font-weight: normal;
+	font-size: $--button-normal-font-size;
+	font-family: $--button-font-family;
+	text-decoration: none;
+	text-align: center;
+	//line-height: $--button-normal-size;
+	height: $--button-normal-size;
+	padding: 0 $--button-normal-size;
+	margin: 0;
+	appearance: none;
+	cursor: pointer;
+	box-sizing: border-box;
+	transition-property: all;
+	transition-duration: 0.3s;
+	border-radius: $--button-normal-radus;
+	border: none;
+	white-space: nowrap;
+	vertical-align: middle;
+
+	/* 	> span {
+		padding: 0px 0.8rem;
+	} */
+
+	&:visited {
+		color: #666;
+	}
+	&:hover,
+	&:focus {
+		outline: none;
+	}
+
+	&:active,
+	&.active,
+	&.is-active {
+		opacity: 1;
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+		text-decoration: none;
+		transition-duration: 0s;
+		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+	}
+
+	&.disabled,
+	&.is-disabled,
+	&:disabled {
+		top: 0 !important;
+		background: #eee !important;
+		border: 1px solid #ddd !important;
+		text-shadow: 0 1px 1px white !important;
+		color: #ccc !important;
+		cursor: default !important;
+		appearance: none !important;
+		-webkit-box-shadow: none !important;
+		box-shadow: none !important;
+		opacity: 0.8 !important;
+	}
+
+	@include button-size($--button-size-map);
+
+	@include button-color($--button-color-map);
+
+	@include button-circle($--button-size-map);
+
+	@include button-square($--button-size-map);
+
+	@include button-ellipse($--button-size-map);
+}

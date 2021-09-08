@@ -1,0 +1,124 @@
+@mixin form-item {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	font-size: #{_varWithDefault(font-size,$--gn-font-size)};
+	height: #{_varWithDefault(height,$--gn-form-item-height)};
+	line-height: #{_varWithDefault(height,$--gn-form-item-height)};
+	
+	@include e(el){
+		background-color: transparent;
+	}
+    
+}
+
+
+@mixin input-item {
+
+	$-radius:5px;
+
+	@include form-item;
+	width: calc(#{_varWithDefault(width,100%)} - 2px);
+	border: 1px solid $--gn-color-border-lighter;
+	border-radius: $-radius;
+	transition: box-shadow .2s cubic-bezier(0.5, 0, 0.2, 1);
+	@include e(field) {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		color: #{$--gn-color-font};
+    }
+
+	@include e(el){
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-size: inherit;
+		color: #{$--gn-color-font};
+		padding: 0 0.5rem;
+		outline: none;
+		border: none;
+		width: calc(100% - #{_varWithDefault(assist-wrap-width,0px)});
+		height: 100%;
+		&::placeholder {
+			color: $--gn-color-font-lightest;
+			font-size: inherit;
+		}
+	}
+
+	@include e(assist-wrap){
+		position: absolute;
+		border-top-right-radius: $-radius;
+		border-bottom-right-radius: $-radius;
+		line-height: calc(#{_varWithDefault(height,$--gn-form-item-height)} - 2px);
+		right: 0;
+		top: 0;
+		padding-right: calc(#{_varWithDefault(height,$--gn-form-item-height)} / 4);
+		color: $--gn-color-font-lighter;
+		max-height: 100%;
+    	overflow: hidden;
+		span{
+			font-size: #{_varWithDefault(font-size,$--gn-font-size)};
+		}
+	}
+
+	@include e((tool-wrap,unit-wrap)){
+		display: inline-block;
+	}
+
+	@include e(tool-wrap){
+		span{
+			padding-right: .5rem;
+			text-align: center;
+		}
+	}
+
+	@include m((readonly,disabled)) {
+		opacity: 0.6;
+	}
+	
+	@include m(disabled) {
+		border-color: transparent!important;
+		background-color: #{$--gn-color-border-lighter};
+	}
+
+	&:hover{
+		box-shadow: 0 0 2.5px $--gn-color-border-lighter;
+	}
+	@include m(error){
+		transition: border-color .1s cubic-bezier(0.5, 0, 0.2, 1);
+		border-color: $--gn-color-error;
+	}
+
+	@include m(focus){
+		transition: border-color .1s cubic-bezier(0.5, 0, 0.2, 1);
+		border-color: $--gn-color-primary!important;
+	}
+}
+
+@mixin drop-item{
+	@include input-item;
+
+	@include e(drop-wrap) {
+        border: 1px solid $--gn-color-border-lighter;
+        border-top: unset;
+        background-color: white;
+        box-shadow: 0px 2px 5px $--gn-color-border;
+    }
+}
+
+@mixin check-item{
+	@include form-item;
+    outline: none;
+    color: #{_varWithDefault(inactive-color, $--gn-color-font)};
+    user-select: none;
+    @include e(el) {
+        display: none;
+        &:checked + i {
+            color: $--check-selected-color;
+            & + span {
+                color: $--check-selected-color;
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@next"></script>
+		<script src="dist/browser/owl-browser.prod.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<o-button><o-icon name="camera"></o-icon></o-button>
+		</div>
+	</body>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@3.1.2/dist/vue.global.prod.js"></script>
+	<script type="module">
+		import { Owl } from './dist/es/owl.js';
+		console.log(Owl);
+		/* var app = Vue.createApp({
+			name: 'App'
+		});
+		app.use(Owl);
+		app.mount('#app'); */
+	</script> -->
+	<script>
+		const app = Vue.createApp({});
+		app.use(Owl);
+		app.mount('#app');
+		console.log(Owl);
+	</script>
+</html>

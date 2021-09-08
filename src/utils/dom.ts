@@ -1,21 +1,24 @@
-import { OwlComponentInstance } from '@owl/core/types';
-import { forEach, isArray, isObject, isString, difference } from 'lodash';
-import { ComponentInternalInstance, ComponentPublicInstance, getCurrentInstance, reactive } from 'vue';
+import { UnwrapNestedRefs } from '@vue/reactivity';
+import { difference, forEach, isArray, isObject, isString } from 'lodash-es';
+import { getCurrentInstance, isRef, reactive, ref, Ref, watch } from 'vue';
+import { OComponentInstance } from '../define';
 
-type ClsType = undefined | string | Array<string> | Record<string, boolean>;
+type ClsType = undefined | string | Array<string | Ref> | Record<string, boolean> | Ref;
 
-const transformCls = (cls: ClsType | Array<ClsType>): string[] | void => {
-	const class_: string[] = [];
+const transformCls = (cls: ClsType | Array<ClsType>): Array<string | Ref> | void => {
+	const class_: Array<string | Ref | Ref> = [];
 	if (isString(cls)) {
 		if (!class_.includes(cls)) {
 			class_.push(cls);
 		}
+	} else if (isRef(cls)) {
+		class_.push(cls);
 	} else if (isArray(cls)) {
 		cls.forEach((c) => {
 			if (isString(c)) {
 				class_.push(c);
 			} else {
-				const nestedCls = addClass(c);
+				const nestedCls = transformCls(c);
 				if (nestedCls) class_.push(...difference(nestedCls, class_));
 			}
 		});
@@ -28,20 +31,21 @@ const transformCls = (cls: ClsType | Array<ClsType>): string[] | void => {
 	}
 	return class_;
 };
+
 /**
- * 给组件添加类样式
+ * 给组件添加类样式，必须在组件实例上或者setup中调用
+ * 当在setup或生命周期函数中调用用是可以传入响应式的数据
  * @public
  * @method
  * @param cls {string | Array<string> | Record<string, boolean>} 样式表
  */
-export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]): string[] | void {
+export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]): void {
 	const instance = getCurrentInstance();
-	let proxy: OwlComponentInstance;
+	let proxy: OComponentInstance;
 	if (!instance) {
-		const _this = this;
-		proxy = _this as OwlComponentInstance;
+		proxy = this as OComponentInstance;
 	} else {
-		proxy = <OwlComponentInstance>instance.proxy;
+		proxy = <OComponentInstance>instance.proxy;
 	}
 
 	if (!proxy) {
@@ -49,14 +53,61 @@ export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]
 	}
 
 	const class_ = transformCls(cls);
-	if (!class_) {
+	if (!class_ || class_.length == 0) {
 		return;
 	}
-	if (proxy.class__) {
-		proxy.class__.push(...difference(class_, proxy.class__));
+	const refs: Array<Ref> = class_.filter((cls) => isRef(cls)) as Array<Ref>;
+
+	const realClass: Array<string> = class_.filter((cls) => !isRef(cls)) as Array<string>;
+
+	const classRef = ref<Array<string>>(realClass);
+	if (!proxy.class__) {
+		proxy.class__ = classRef.value;
 	} else {
-		proxy.class__ = reactive(class_);
+		proxy.class__.push(...difference(classRef.value, proxy.class__));
 	}
 
-	return class_;
+	if (instance) {
+		watch(
+			refs,
+			(newCls, oldCls) => {
+				if (proxy.class__) {
+					if (oldCls && oldCls.length === 0 && newCls && newCls.length > 0) {
+						proxy.class__.push(...difference(newCls, proxy.class__));
+					} else {
+						oldCls.forEach((oc) => {
+							const index = proxy.class__?.indexOf(oc);
+							if (index) {
+								proxy.class__?.splice(index, 1, newCls[index - 1]);
+							}
+						});
+					}
+				}
+			},
+			{
+				immediate: true
+			}
+		);
+	}
+};
+
+export const cssVar = function (this: void | unknown, name: string, value: unknown): void {
+	const instance = getCurrentInstance();
+	let proxy: OComponentInstance;
+	if (!instance) {
+		proxy = this as OComponentInstance;
+	} else {
+		proxy = <OComponentInstance>instance.proxy;
+	}
+
+	if (!proxy) {
+		return;
+	}
+	if (proxy.cssVars__) {
+		(<UnwrapNestedRefs<Record<string, unknown>>>proxy.cssVars__)[name] = value;
+	} else {
+		proxy.cssVars__ = reactive({
+			[name]: value
+		});
+	}
 };

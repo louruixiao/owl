@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import dts from 'vite-plugin-dts';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
+import { defineConfig } from 'vite';
 
 function resolve(filePath: string): string {
 	return path.join(__dirname, filePath);
@@ -9,22 +9,31 @@ function resolve(filePath: string): string {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	base: './',
+	publicDir: './public',
 	root: process.env.NODE_ENV === 'production' ? '.' : './src-example',
-	mode: 'production',
+	mode: 'development',
 	clearScreen: false,
 	build: {
-		target: ['es2015'],
-		lib: {
-			entry: resolve('src/index.ts'),
-			name: 'Owl',
-			formats: ['es', 'umd', 'cjs'],
-			fileName: 'owl'
-		},
+		target: 'es2015',
+		outDir: resolve('./dist/es'),
 		rollupOptions: {
-			// 请确保外部化那些你的库中不需要的依赖
+			input: {
+				owl: resolve('./src/index.ts')
+			},
+			// 确保外部化处理那些你不想打包进库的依赖
 			external: ['vue'],
 			output: {
-				// 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
+				dir: resolve('./dist/es'),
+				entryFileNames: '[name].js',
+				chunkFileNames: '[name].js',
+				name: 'Owl',
+				format: 'es',
+				sourcemap: true,
+				manualChunks: {
+					'fortawesome-brands': ['@fortawesome/free-brands-svg-icons'],
+					'fortawesome-solid': ['@fortawesome/free-solid-svg-icons']
+				},
 				globals: {
 					vue: 'Vue'
 				}
@@ -36,12 +45,5 @@ export default defineConfig({
 			'@owl': resolve('./src/')
 		}
 	},
-	plugins: [
-		dts({
-			insertTypesEntry: true,
-			outputDir: 'dist',
-			exclude: ['example']
-		}),
-		vue()
-	]
+	plugins: [vue(), vueJsx()]
 });

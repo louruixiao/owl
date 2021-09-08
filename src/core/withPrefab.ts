@@ -1,7 +1,7 @@
-import { forEach } from 'lodash';
-import { computed, getCurrentInstance, reactive, ref } from 'vue';
-import { OwlWithOptions, PrefabDefine } from '@owl/core/types';
-import { addClass } from '@owl/utils/dom';
+import { addClass, cssVar } from '@owl/utils/dom';
+import { forEach } from 'lodash-es';
+import { computed, getCurrentInstance, ref, useCssVars } from 'vue';
+import { OPrefabDefine, OPrefabOptionsDefine } from '../define';
 
 const transformName = (name: string): string => {
 	const c = name.charAt(0);
@@ -13,33 +13,60 @@ const transformName = (name: string): string => {
 
 /**
  * 预制函数
- * @param {OwlWithOptions} options
+ * @param {OPrefabOptionsDefine} options
  * @returns
  */
-export function withPrefab<T extends {}>(options: OwlWithOptions): Partial<T & PrefabDefine> {
-	const { props, cls, cssVars } = options;
+export function withPrefab(options: OPrefabOptionsDefine): OPrefabDefine {
+	const { props, cls } = options;
 	//获取组件对象实例
 	const instance = getCurrentInstance();
+
 	if (!instance || !instance.type.name) {
-		return {} as T;
+		return {} as OPrefabDefine;
 	}
 
 	//生成组件主要样式类名
 	const cType__ = transformName(instance.type.name);
 
 	//生成组件ID
-	const id__ = props.id || instance.uid;
+	const id__ = (props.id ?? instance.uid) as string;
 	//显示状态
 	const display__ = computed(() => {
-		return props.display ?? true;
+		return (props.display as boolean) ?? true;
 	});
 
 	//类样式表
 	addClass([cType__, cls]);
+
+	// const cssVars__ = reactive(cssVars || {});
+	// onMounted(() => {
+	// 	proxy.cssVars__[proxy.cType__ + '_' + name] = value;
+	// });
+	useCssVars((_ctx) => {
+		const vars: Record<string, string> = {};
+
+		forEach(_ctx.cssVars__ || {}, (value, key) => {
+			vars[cType__ + '_' + key] = value;
+		});
+
+		return vars;
+	});
+
+	/**
+	 * 生成BEM 修饰符类名
+	 * @param modifier 修饰符
+	 * @returns
+	 */
+	const bemModifier__ = (modifier: string): string => cType__ + '--' + modifier;
+	/**
+	 * 生成BEM 元素类名
+	 * @param element 元素
+	 * @returns
+	 */
+	const bemElement__ = (element: string): string => cType__ + '__' + element;
+
 	//刷新状态
 	const refresh__ = ref(true);
-	//样式表 包括 css var
-	const style__ = reactive<Record<string, string | number>>({});
 
 	/**
 	 * 刷新组件
@@ -54,43 +81,15 @@ export function withPrefab<T extends {}>(options: OwlWithOptions): Partial<T & P
 		}, 200);
 	};
 
-	/**
-	 * 添加 css var() 变量
-	 * @method
-	 * @private
-	 * @param cssName 样式名
-	 * @param value 样式值
-	 */
-	const putCssVar__ = (cssName: string, value: string | number): void => {
-		style__[`--${cType__}-${cssName}`] = value;
-	};
-
-	const cssModifier__ = (cls: string | undefined): string | undefined => {
-		if (cls !== undefined) {
-			return cType__ + '--' + cls;
-		}
-	};
-	const cssElement__ = (cls: string | undefined): string | undefined => {
-		if (cls !== undefined) {
-			return cType__ + '__' + cls;
-		}
-	};
-
-	if (cssVars) {
-		forEach(cssVars, (value: string | number, cssName: string) => {
-			putCssVar__(cssName, value);
-		});
-	}
 	return {
 		cType__,
 		id__,
 		display__,
 		refresh__,
-		style__,
+		bemModifier__,
+		bemElement__,
 		addClass,
-		domRefresh,
-		putCssVar__,
-		cssModifier__,
-		cssElement__
-	} as Partial<T & PrefabDefine>;
+		cssVar,
+		domRefresh
+	};
 }

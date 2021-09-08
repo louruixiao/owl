@@ -7,6 +7,7 @@
 	"bracketSpacing": true,
 	"jsxBracketSameLine": true,
 	"htmlWhitespaceSensitivity": "ignore",
+	"vueIndentScriptAndStyle": false,
 	"trailingComma": "none",
 	"useTabs": true,
 	"jsxSingleQuote": false,
