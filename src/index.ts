@@ -1,7 +1,6 @@
 import { dom, IconDefinition, IconPack, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import * as components from '@owl/themes/skeleton';
-import { OButton, OIcon } from '@owl/themes/skeleton';
 import { forEach } from 'lodash-es';
 import { App } from 'vue';
 
@@ -24,9 +23,3 @@ export { install, addIcon };
 export const Owl = {
 	install
 };
-declare module 'vue' {
-	export interface GlobalComponents {
-		OButton: typeof OButton;
-		OIcon: typeof OIcon;
-	}
-}

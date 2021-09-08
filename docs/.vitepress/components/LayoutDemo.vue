@@ -13,7 +13,7 @@
         <o-layout-item class="item" :md="1">11</o-layout-item>
         <o-layout-item class="item" :md="1">12</o-layout-item>
     </o-layout>
-    <o-layout mode="form" :gutter="5">
+    <o-layout mode="framework" :gutter="5">
         <o-layout-item class="item" :md="5">1</o-layout-item>
         <o-layout-item class="item" :md="1">2</o-layout-item>
         <o-layout-item class="item" :md="1">3</o-layout-item>

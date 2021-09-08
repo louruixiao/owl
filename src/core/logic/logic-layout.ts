@@ -1,5 +1,5 @@
 import { OGutter, OLayoutExpose, OLayoutPrefabDefine, OPrefabOptionsDefine } from '@owl/define';
-import { isNumber, isObject, without } from 'lodash-es';
+import { isNumber, isObject } from 'lodash-es';
 import { computed, PropType, watchEffect } from 'vue';
 import { BaseProps } from '../base-props';
 import { withPrefab } from '../withPrefab';
@@ -9,13 +9,14 @@ const LayoutProps = {
 	/**
 	 * 布局模式
 	 * @prop
-	 * @values `form`, `column-12`, `column-24`
+	 * @values `framework`, `column-12`, `column-24`
 	 */
 	mode: {
-		type: String as PropType<'form' | 'column-12' | 'column-24'>,
+		type: String as PropType<'framework' | 'column-12' | 'column-24'>,
 		required: true,
-		validator: (value: Array<string>) => {
-			return without(value, 'form', 'column-12').length === 0;
+		validator: (value: string) => {
+			// 这个值必须匹配下列字符串中的一个
+			return ['framework布局', 'column-12', 'column-24'].indexOf(value) !== -1;
 		}
 	},
 	/**

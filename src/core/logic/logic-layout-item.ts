@@ -1,5 +1,4 @@
-import { OPrefabOptionsDefine } from '@owl/define';
-import { OLayoutItemExpose, OLayoutItemPrefabDefine } from '@owl/define/';
+import { OPrefabOptionsDefine, OLayoutItemExpose, OLayoutItemPrefabDefine } from '@owl/define';
 import { computed, PropType } from 'vue';
 import { BaseProps } from '../base-props';
 import { withPrefab } from '../withPrefab';
@@ -7,40 +6,52 @@ import { withPrefab } from '../withPrefab';
 const LayoutItemProps = {
 	...BaseProps,
 	/**
-	 * 跨度，如果不做响应配置，默认使用的跨度
+	 * `column布局` 跨度，如果不做响应配置，默认使用的跨度
 	 * @prop
 	 */
 	span: Number as PropType<number>,
 	/**
-	 * 屏幕宽度0到576px时的跨度，无需设置，列宽度始终100%
+	 * `column布局` 屏幕宽度0到576px时的跨度，无需设置，列宽度始终100%
 	 * @prop
 	 */
 	xs: [Number, Object] as PropType<number | Record<string, unknown>>,
 	/**
-	 * 屏幕宽度576px到768px时的跨度
+	 * `column布局` 屏幕宽度576px到768px时的跨度
 	 * @prop
 	 */
 	sm: [Number, Object] as PropType<number | Record<string, unknown>>,
 	/**
-	 * 屏幕宽度768px到992px时的跨度
+	 * `column布局` 屏幕宽度768px到992px时的跨度
 	 * @prop
 	 */
 	md: [Number, Object] as PropType<number | Record<string, unknown>>,
 	/**
-	 * 屏幕宽度992px到1200px时的跨度
+	 * `column布局` 屏幕宽度992px到1200px时的跨度
 	 * @prop
 	 */
 	lg: [Number, Object] as PropType<number | Record<string, unknown>>,
 	/**
-	 * 屏幕宽度1200px到1400px时的跨度
+	 * `column布局` 屏幕宽度1200px到1400px时的跨度
 	 * @prop
 	 */
 	xl: [Number, Object] as PropType<number | Record<string, unknown>>,
 	/**
-	 * 屏幕宽度大于1400px时的跨度
+	 * `column布局` 屏幕宽度大于1400px时的跨度
 	 * @prop
 	 */
-	xxl: [Number, Object] as PropType<number | Record<string, unknown>>
+	xxl: [Number, Object] as PropType<number | Record<string, unknown>>,
+	/**
+	 * `framework布局` 指定在容器中的位置
+	 * @prop
+	 * @values `top` `bottom` `left` `right` `center`
+	 */
+	position: {
+		type: String as PropType<'top' | 'bottom' | 'left' | 'right' | 'center'>,
+		validator: (value: string) => {
+			// 这个值必须匹配下列字符串中的一个
+			return ['top', 'bottom', 'left', 'right', 'center'].indexOf(value) !== -1;
+		}
+	}
 } as const;
 
 const withLayoutItem = (options: OPrefabOptionsDefine): OLayoutItemPrefabDefine => {

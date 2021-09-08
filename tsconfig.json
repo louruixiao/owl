@@ -23,7 +23,6 @@
 		}
 	},
 	"include": [
-		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.tsx",
 		"src/**/*.vue",
@@ -35,6 +34,10 @@
 		"docs/**/*.d.ts",
 		"docs/**/*.tsx",
 		"docs/**/*.vue",
+		"docs/.vitepress/**/*.ts",
+		"docs/.vitepress/**/*.d.ts",
+		"docs/.vitepress/**/*.tsx",
+		"docs/.vitepress/**/*.vue",
 		"tests/**/*.ts",
 		"tests/**/*.tsx",
 		"**/wepack.*.ts"
