@@ -1,7 +1,7 @@
+import { OComponentInstance } from '@owl/types/base-define';
 import { UnwrapNestedRefs } from '@vue/reactivity';
 import { difference, forEach, isArray, isObject, isString } from 'lodash-es';
 import { getCurrentInstance, isRef, reactive, ref, Ref, watch } from 'vue';
-import { OComponentInstance } from '../define';
 
 type ClsType = undefined | string | Array<string | Ref> | Record<string, boolean> | Ref;
 
@@ -40,12 +40,13 @@ const transformCls = (cls: ClsType | Array<ClsType>): Array<string | Ref> | void
  * @param cls {string | Array<string> | Record<string, boolean>} 样式表
  */
 export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]): void {
-	const instance = getCurrentInstance();
+	const internalInstance = getCurrentInstance();
+
 	let proxy: OComponentInstance;
-	if (!instance) {
+	if (!internalInstance) {
 		proxy = this as OComponentInstance;
 	} else {
-		proxy = <OComponentInstance>instance.proxy;
+		proxy = <OComponentInstance>internalInstance.proxy;
 	}
 
 	if (!proxy) {
@@ -67,7 +68,7 @@ export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]
 		proxy.class__.push(...difference(classRef.value, proxy.class__));
 	}
 
-	if (instance) {
+	if (internalInstance) {
 		watch(
 			refs,
 			(newCls, oldCls) => {
@@ -91,7 +92,7 @@ export const addClass = function (this: void | unknown, cls: ClsType | ClsType[]
 	}
 };
 
-export const cssVar = function (this: void | unknown, name: string, value: unknown): void {
+export const cssVar = function (this: void | unknown, name: string, value: unknown, prefix = true): void {
 	const instance = getCurrentInstance();
 	let proxy: OComponentInstance;
 	if (!instance) {
@@ -103,11 +104,14 @@ export const cssVar = function (this: void | unknown, name: string, value: unkno
 	if (!proxy) {
 		return;
 	}
+
+	const key = prefix ? proxy.cType__ + '_' + name : name;
+
 	if (proxy.cssVars__) {
-		(<UnwrapNestedRefs<Record<string, unknown>>>proxy.cssVars__)[name] = value;
+		(<UnwrapNestedRefs<Record<string, unknown>>>proxy.cssVars__)[key] = value;
 	} else {
 		proxy.cssVars__ = reactive({
-			[name]: value
+			[key]: value
 		});
 	}
 };

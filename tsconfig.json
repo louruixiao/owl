@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "commonjs",
+		"module": "esnext",
 		"moduleResolution": "node",
 		"strict": true,
 		"jsx": "preserve",
@@ -11,36 +11,24 @@
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-		"types": ["vite/client", "node", "webpack"],
-		"typeRoots": ["src/types"],
+		"types": ["vite/client", "vitepress", "node", "webpack"],
 		"baseUrl": ".",
-		"paths": {
-			"@owl": ["src/index"],
-			"@owl/*": ["src/*"],
-			"@types": ["src/types/index"],
-			"@types/*": ["src/types/*"],
-			"@yiird/owl": ["src/index"]
-		}
+		"paths": { "@owl/*": ["./src/*"], "@yiird/owl": ["./src/index"] },
+		"rootDirs": ["src/*", "src-example/src/*", "docs/*"]
 	},
 	"include": [
+		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.tsx",
 		"src/**/*.vue",
-		"src-example/**/*.ts",
-		"src-example/**/*.d.ts",
-		"src-example/**/*.tsx",
-		"src-example/**/*.vue",
-		"docs/**/*.ts",
-		"docs/**/*.d.ts",
-		"docs/**/*.tsx",
-		"docs/**/*.vue",
 		"docs/.vitepress/**/*.ts",
 		"docs/.vitepress/**/*.d.ts",
 		"docs/.vitepress/**/*.tsx",
 		"docs/.vitepress/**/*.vue",
-		"tests/**/*.ts",
-		"tests/**/*.tsx",
-		"**/wepack.*.ts"
+		"src-example/src/**/*.ts",
+		"src-example/src/**/*.d.ts",
+		"src-example/src/**/*.tsx",
+		"src-example/src/**/*.vue"
 	],
 	"exclude": ["node_modules", "build"]
 }

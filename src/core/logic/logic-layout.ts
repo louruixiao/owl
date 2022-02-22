@@ -1,7 +1,7 @@
-import { OGutter, OLayoutExpose, OLayoutPrefabDefine, OPrefabOptionsDefine } from '@owl/define';
 import { isNumber, isObject } from 'lodash-es';
-import { computed, PropType, watchEffect } from 'vue';
-import { BaseProps } from '../base-props';
+import { computed, ExtractPropTypes, PropType, provide, ref, Ref, watchEffect } from 'vue';
+import { OComponentInstance, OGutter, OPrefabExpose, OPrefabOptionsDefine, OPrefabPrivate } from '../../types/base-define';
+import { BaseProps } from '../props/base-props';
 import { withPrefab } from '../withPrefab';
 
 const LayoutProps = {
@@ -16,7 +16,7 @@ const LayoutProps = {
 		required: true,
 		validator: (value: string) => {
 			// 这个值必须匹配下列字符串中的一个
-			return ['framework布局', 'column-12', 'column-24'].indexOf(value) !== -1;
+			return ['framework', 'column-12', 'column-24'].indexOf(value) !== -1;
 		}
 	},
 	/**
@@ -30,16 +30,42 @@ const LayoutProps = {
 	}
 } as const;
 
-const withLayout = (options: OPrefabOptionsDefine): OLayoutPrefabDefine => {
+type OLayoutExpose = OPrefabExpose;
+
+type OLayoutPrivate = OPrefabPrivate;
+
+type OLayoutPropsDefine = Readonly<ExtractPropTypes<typeof LayoutProps>>;
+
+type OLayoutPrefabOptionsDefine = OPrefabOptionsDefine<OLayoutPropsDefine>;
+
+type OLayoutPrefabDefine = OLayoutExpose & OLayoutPrivate;
+
+type OLayoutInstance = Omit<OComponentInstance<OLayoutPropsDefine, OLayoutPrefabDefine>, keyof OLayoutPrivate>;
+
+type ParentOptions = {
+	mode: string;
+	count: Ref<number>;
+};
+
+const withLayout = (options: OLayoutPrefabOptionsDefine): OLayoutPrefabDefine => {
 	const { props } = options;
 	const prefab = withPrefab(options);
-	const expose: OLayoutExpose = {};
 
 	const obtainModeClass = computed(() => {
 		return prefab.cType__ + '--' + props.mode;
 	});
 
 	prefab.addClass([obtainModeClass]);
+
+	const mode = props.mode;
+	const count = ref(0);
+
+	const parentOptions: ParentOptions = {
+		mode,
+		count
+	};
+
+	provide('parentOptions', parentOptions);
 
 	watchEffect(() => {
 		if (isObject(props.gutter)) {
@@ -54,9 +80,6 @@ const withLayout = (options: OPrefabOptionsDefine): OLayoutPrefabDefine => {
 		}
 	});
 
-	return {
-		...prefab,
-		...expose
-	};
+	return prefab;
 };
-export { withLayout, LayoutProps };
+export { withLayout, LayoutProps, OLayoutPropsDefine, OLayoutInstance, ParentOptions };

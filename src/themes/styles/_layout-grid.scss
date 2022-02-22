@@ -1,0 +1,9 @@
+@import './mixins/config';
+@import './mixins/base';
+
+@include b(layout-grid) {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: _var('columns');
+	grid-template-rows: 100px auto 100px;
+}

@@ -2,6 +2,7 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 function resolve(filePath: string): string {
 	return path.join(__dirname, filePath);
@@ -42,8 +43,19 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			'@owl': resolve('./src/')
+			'@owl': resolve('./src/'),
+			'@yiird/owl': resolve('./src/')
 		}
 	},
-	plugins: [vue(), vueJsx()]
+	plugins: [
+		vue({
+			template: {
+				compilerOptions: {
+					whitespace: 'preserve'
+				}
+			}
+		}),
+		vueJsx(),
+		dts()
+	]
 });

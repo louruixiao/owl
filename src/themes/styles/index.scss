@@ -1,5 +1,5 @@
 :root {
-	--gn-color-default: #737f8c;
+	--gn-color-default: #9da6b1;
 	--gn-color-primary: #409eff;
 	--gn-color-success: #72d742;
 	--gn-color-warning: #f09f4c;
@@ -64,17 +64,18 @@ div::-webkit-scrollbar-thumb {
 	background-color: darkgrey;
 }
 
-@import './mixins/config';
-@import './mixins/base';
-@import './mixins/func';
-@import './mixins/form';
-@import './mixins/button';
-@import './mixins/grid-system';
+// @import './mixins/config';
+// @import './mixins/base';
+// @import './mixins/func';
+// @import './mixins/form';
+// @import './mixins/button';
+// @import './mixins/grid-system';
 
-@import './var';
-@import './common/balloon-css/balloon';
-@import './common/animated';
+// @import './var';
+// @import './common/balloon-css/balloon';
+// @import './common/animated';
 
-@import './button';
-@import './grid-system';
-@import './layout';
+// @import './icon';
+// @import './button';
+// @import './grid-system';
+// @import './layout';

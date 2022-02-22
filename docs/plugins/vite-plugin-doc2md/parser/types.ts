@@ -49,6 +49,7 @@ export interface Comment {
 	tags?: Tag[];
 	//挂载名称 被注释的属性或方法名
 	name: string;
+	refs?: Comment[];
 	children?: Comment[];
 }
 

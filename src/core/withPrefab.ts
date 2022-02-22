@@ -1,7 +1,7 @@
 import { addClass, cssVar } from '@owl/utils/dom';
 import { forEach } from 'lodash-es';
-import { computed, getCurrentInstance, ref, useCssVars } from 'vue';
-import { OPrefabDefine, OPrefabOptionsDefine } from '../define';
+import { computed, getCurrentInstance, nextTick, ref, useCssVars } from 'vue';
+import { OBasePropsDefine, OComponentInstance, OPrefabDefine, OPrefabOptionsDefine } from '../types/base-define';
 
 const transformName = (name: string): string => {
 	const c = name.charAt(0);
@@ -16,27 +16,29 @@ const transformName = (name: string): string => {
  * @param {OPrefabOptionsDefine} options
  * @returns
  */
-export function withPrefab(options: OPrefabOptionsDefine): OPrefabDefine {
-	const { props, cls } = options;
+export function withPrefab<P extends OBasePropsDefine>(options: OPrefabOptionsDefine<P>): OPrefabDefine {
+	const { props } = options;
 	//获取组件对象实例
-	const instance = getCurrentInstance();
+	const internalInstance = getCurrentInstance();
 
-	if (!instance || !instance.type.name) {
+	if (!internalInstance || !internalInstance.type.name) {
 		return {} as OPrefabDefine;
 	}
 
 	//生成组件主要样式类名
-	const cType__ = transformName(instance.type.name);
+	const cType__ = transformName(internalInstance.type.name);
 
 	//生成组件ID
-	const id__ = (props.id ?? instance.uid) as string;
+	const id__ = (props.id ?? internalInstance.uid) as string;
 	//显示状态
 	const display__ = computed(() => {
 		return (props.display as boolean) ?? true;
 	});
 
+	(<OComponentInstance>internalInstance.proxy).cType__ = cType__;
+
 	//类样式表
-	addClass([cType__, cls]);
+	addClass(cType__);
 
 	// const cssVars__ = reactive(cssVars || {});
 	// onMounted(() => {
@@ -44,9 +46,8 @@ export function withPrefab(options: OPrefabOptionsDefine): OPrefabDefine {
 	// });
 	useCssVars((_ctx) => {
 		const vars: Record<string, string> = {};
-
 		forEach(_ctx.cssVars__ || {}, (value, key) => {
-			vars[cType__ + '_' + key] = value;
+			vars[key] = value;
 		});
 
 		return vars;
@@ -75,10 +76,9 @@ export function withPrefab(options: OPrefabOptionsDefine): OPrefabDefine {
 	 */
 	const domRefresh = () => {
 		refresh__.value = false;
-		const timer = setTimeout(() => {
+		nextTick(() => {
 			refresh__.value = true;
-			clearTimeout(timer);
-		}, 200);
+		});
 	};
 
 	return {

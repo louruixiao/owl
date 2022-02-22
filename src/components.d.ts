@@ -1,9 +1,16 @@
-import * as components from '@owl/themes/skeleton';
+import { OButton, OCodeEditor, OIcon, OLayout, OLayoutGrid, OLayoutItem } from './skeleton';
 declare module 'vue' {
-	export interface GlobalComponents {
-		OButton: typeof components.OButton;
-		OIcon: typeof components.OIcon;
-		OLayout: typeof components.OLayout;
-		OLayoutItem: typeof components.OLayoutItem;
+	interface GlobalComponents {
+		OIcon: typeof OIcon;
+		OButton: typeof OButton;
+		OLayout: typeof OLayout;
+		OLayoutItem: typeof OLayoutItem;
+		OCodeEditor: typeof OCodeEditor;
+		OLayoutGrid: typeof OLayoutGrid;
+	}
+
+	interface ComponentCustomProps {
+		id?: string;
+		display?: boolean;
 	}
 }

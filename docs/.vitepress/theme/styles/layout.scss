@@ -1,0 +1,96 @@
+body {
+	font-size: 14px !important;
+}
+
+code {
+	line-height: 1.5rem;
+	padding: 2px;
+}
+
+.container {
+	sup.required {
+		color: red;
+		zoom: 0.9;
+	}
+	.content {
+		.content-table-wrap {
+			max-width: 100%;
+			overflow-x: auto;
+			border-radius: 4px;
+			border: 1px solid rgba(0, 0, 0, 0.12);
+		}
+		.content-table {
+			table {
+				margin: 0 !important;
+				width: 100%;
+				display: table;
+				thead,
+				tbody {
+					min-width: 100%;
+				}
+				th,
+				td {
+					border: none !important;
+					text-align: left;
+				}
+				tr:nth-child(2n) {
+					background-color: unset !important;
+				}
+				tr {
+					border-top: 1px solid rgba(0, 0, 0, 0.12);
+				}
+				thead tr:first-child {
+					border-top: none;
+				}
+				th span {
+					display: block;
+				}
+			}
+
+			&.props-table {
+				table {
+					th:nth-child(1) {
+						width: 8rem;
+						span {
+							width: 8rem;
+						}
+					}
+					th:nth-child(2) {
+						width: 10rem;
+						span {
+							width: 10rem;
+						}
+					}
+					th:nth-child(3) {
+						width: 10rem;
+						span {
+							width: 10rem;
+						}
+					}
+					th:nth-child(4) {
+						width: 5rem;
+						span {
+							width: 5rem;
+						}
+					}
+					th:nth-child(5) {
+						width: 10rem;
+						span {
+							width: 10rem;
+						}
+					}
+				}
+			}
+			&.refs-table {
+				table {
+					th:nth-child(1) {
+						width: 8rem;
+						span {
+							width: 8rem;
+						}
+					}
+				}
+			}
+		}
+	}
+}

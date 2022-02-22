@@ -1,127 +1,36 @@
-import { without } from 'lodash-es';
-import { computed, PropType, ref } from 'vue';
-import { OIconExpose, OIconPrefabDefine, OPrefabOptionsDefine } from '../../define';
-import { BaseProps } from '../base-props';
+import { OIconPrefabDefine, OIconPrefabOptionsDefine } from '@owl/types';
+import { isArray, isObject, isString } from 'lodash-es';
+import { computed, ref, watchEffect } from 'vue';
 import { withPrefab } from '../withPrefab';
-
-const IconProps = {
-	...BaseProps,
-	/**
-	 * 图片名称[图片查询](/icons/all.html "滚动条配置")
-	 * @prop
-	 */
-	name: {
-		type: String as PropType<string>,
-		required: true
-	},
-	/**
-	 * [图片风格](/owl/guide/IconType.html#风格)
-	 * @prop
-	 * @values `fas`：solid 实体 <br> `fal`：light 清淡的<br> `far`：regular 常规的<br> `fad`：duotone 双色调<br> `fat`：thin 细的<br> `fab`：brands 品牌标识
-	 */
-	type: {
-		type: String as PropType<'fas' | 'fal' | 'far' | 'fad' | 'fab' | 'fat'>,
-		default: 'fas',
-		validator: (value: string) => {
-			// 这个值必须匹配下列字符串中的一个
-			return ['fas', 'fal', 'far', 'fad', 'fab', 'fat'].indexOf(value) !== -1;
-		}
-	},
-	/**
-	 * 2xs 到 2xl 的 T 恤尺寸缩放以及从 1x 到 10x 的文字尺寸
-	 * @prop
-	 * @values `lg`, `xs`, `sm`,  `1x`, `2x`, `3x`, `4x`, `5x`, `6x`, `7x`, `8x`, `9x`, `10x`
-	 */
-	size: {
-		type: String as PropType<string | 'lg' | 'xs' | 'sm' | '1x' | '2x' | '3x' | '4x' | '5x' | '6x' | '7x' | '8x' | '9x' | '10x'>,
-		validator: (value: string) => {
-			// 这个值必须匹配下列字符串中的一个
-			return ['lg', 'xs', 'sm', '1x', '2x', '3x', '4x', '5x', '6x', '7x', '8x', '9x', '10x'].indexOf(value) > -1;
-		}
-	},
-	/**
-	 * 将图标设置为使用固定宽度会有所帮助。
-	 * @prop
-	 */
-	fixedWidth: {
-		type: Boolean as PropType<boolean>,
-		default: true
-	},
-	/**
-	 * 旋转 90 180 270读
-	 * @prop
-	 * @values `90` `180` `270`
-	 */
-	rotation: {
-		type: Number as PropType<90 | 180 | 270>,
-		validator: (value: number) => {
-			// 这个值必须匹配下列字符串中的一个
-			return [90, 180, 270].indexOf(value) !== -1;
-		}
-	},
-	/**
-	 * 翻转
-	 * @prop
-	 * @values `horizontal`, `vertical`, `both`
-	 */
-	flip: {
-		type: String as PropType<'horizontal' | 'vertical' | 'both'>,
-		validator: (value: string) => {
-			// 这个值必须匹配下列字符串中的一个
-			return ['horizontal', 'vertical', 'both'].indexOf(value) !== -1;
-		}
-	},
-	/**
-	 * right:在文字右侧，left:在文字左侧
-	 * @prop
-	 * @values `right`, `left`
-	 */
-	pull: {
-		type: String as PropType<'right' | 'left'>,
-		validator: (value: string) => {
-			// 这个值必须匹配下列字符串中的一个
-			return ['right', 'left'].indexOf(value) !== -1;
-		}
-	},
-	/**
-	 * 动画--脉冲式旋转
-	 */
-	pulse: {
-		type: Boolean as PropType<boolean>
-	},
-	/**
-	 * 动画--平滑旋转
-	 */
-	spin: {
-		type: Boolean as PropType<boolean>
-	},
-	/**
-	 * 动画`beat`:心跳,`fade`:淡化,`flash`:闪烁,`spin`:旋转（同属性`:spin="true"`）,`spin-pulse`:脉冲旋转（同`:pulse="true"`）,
-	 */
-	animiate: {
-		type: Array as PropType<Array<'beat' | 'fade' | 'flash' | 'pulse' | 'flip' | 'spin' | 'spin-reverse'>>,
-		validator: (value: Array<string>) => {
-			return without(value, 'beat', 'fade', 'flash', 'pulse', 'flip', 'spin', 'spin-reverse').length === 0;
-		}
-	}
-} as const;
 
 /**
  *
  * icon核心逻辑
  *
- * @param {OPrefabOptionsDefine} options
+ * @param {OIconPrefabOptionsDefine} options
  * @returns
  */
-const withIcon = (options: OPrefabOptionsDefine): OIconPrefabDefine => {
+export const withIcon = (options: OIconPrefabOptionsDefine): OIconPrefabDefine => {
 	const { props } = options;
 	const prefab = withPrefab(options);
-	const expose: OIconExpose = {};
 
-	const obtainIcon = ref<Array<string>>([]);
+	const obtainIcon = computed(() => {
+		if (isArray(props.icon) || isObject(props.icon)) {
+			return props.icon;
+		} else {
+			return [props.type as string, props.icon as string];
+		}
+	});
 
 	const animiateClass = computed(() => {
-		return !props.animiate || 'fa-' + (props.animiate as Array<string>).join(' fa-');
+		const animate = props.animiate;
+		if (isString(animate)) {
+			return 'fa-' + animate;
+		} else if (isArray(animate)) {
+			return 'fa-' + (props.animiate as Array<string>).join(' fa-');
+		} else {
+			return null;
+		}
 	});
 
 	const sizeClass = computed(() => {
@@ -130,12 +39,123 @@ const withIcon = (options: OPrefabOptionsDefine): OIconPrefabDefine => {
 
 	prefab.addClass([animiateClass, sizeClass]);
 
-	obtainIcon.value = [props.type as string, props.name as string];
+	//是否同时有翻转和旋转
+	const obtainIsFlipAndRotation = computed<boolean>(() => {
+		if (props.rotation && props.flip) {
+			return true;
+		}
+		return false;
+	});
+
+	const obtainFlip = computed<string | null>(() => {
+		if (props.flip && props.rotation) {
+			return 'fa-flip-' + props.flip;
+		}
+		return props.flip as string;
+	});
+
+	//静态旋转
+	const rotateByClass = ref<string | null>();
+	prefab.addClass(rotateByClass);
+	const rotateDeg = ref<string | null>(null);
+	prefab.cssVar('fa-rotate-angle', rotateDeg, false);
+
+	//设置图标将缩放的最大值
+	const scale = ref<number | null>(null);
+	prefab.cssVar('fa-beat-scale', scale, false);
+	prefab.cssVar('fa-beat-fade-scale', scale, false);
+
+	//设置图标将淡入淡出的最低不透明度值
+	const opacity = ref<number | null>(null);
+	prefab.cssVar('fa-fade-opacity', opacity, false);
+	prefab.cssVar('fa-beat-fade-opacity', opacity, false);
+
+	//设置旋转轴
+	const flipAxisX = ref<0 | 1 | null>(0);
+	prefab.cssVar('fa-flip-x', flipAxisX, false);
+
+	const flipAxisY = ref<0 | 1 | null>(1);
+	prefab.cssVar('fa-flip-y', flipAxisY, false);
+
+	const flipAxisZ = ref<0 | 1 | null>(0);
+	prefab.cssVar('fa-flip-z', flipAxisZ, false);
+
+	const setFlipAxis = (axis: 'x' | 'y' | 'z') => {
+		switch (axis) {
+			case 'x': {
+				flipAxisX.value = 1;
+				break;
+			}
+			case 'y': {
+				flipAxisY.value = 1;
+				break;
+			}
+			case 'z': {
+				flipAxisZ.value = 1;
+				break;
+			}
+		}
+	};
+
+	//设置旋转角度
+	const flipAngle = ref<string | null>(null);
+	prefab.cssVar('fa-flip-angle', flipAngle, false);
+
+	//动画配置选项
+	const a_delay = ref<number | null>(null);
+	prefab.cssVar('fa-animation-delay', a_delay, false);
+	const a_direction = ref<string | null>(null);
+	prefab.cssVar('fa-animation-direction', a_direction, false);
+	const a_duration = ref<number | null>(null);
+	prefab.cssVar('fa-animation-duration', a_duration, false);
+	const a_iterationCount = ref<number | null>(null);
+	prefab.cssVar('fa-animation-iteration-count', a_iterationCount, false);
+	const a_timingFunction = ref<string | null>(null);
+	prefab.cssVar('fa-animation-timing', a_timingFunction, false);
+
+	watchEffect(() => {
+		if (props.rotation) {
+			rotateByClass.value = 'fa-rotate-by';
+			rotateDeg.value = props.rotation + 'deg';
+		} else {
+			rotateByClass.value = null;
+			rotateDeg.value = null;
+		}
+
+		scale.value = props.animiateScale || null;
+		opacity.value = props.animiateOpacity || null;
+		if (props.animiateFlipAngle) {
+			flipAngle.value = props.animiateFlipAngle + 'deg';
+		} else {
+			flipAngle.value = null;
+		}
+
+		if (props.animiateFlipAxis) {
+			flipAxisX.value = 0;
+			flipAxisY.value = 0;
+			flipAxisZ.value = 0;
+			if (isString(props.animiateFlipAxis)) {
+				setFlipAxis(props.animiateFlipAxis);
+			} else if (isArray(props.animiateFlipAxis)) {
+				props.animiateFlipAxis.forEach(setFlipAxis);
+			}
+		}
+		if (props.animiateOptions) {
+			const { delay, direction, duration, iterationCount, timingFunction } = props.animiateOptions;
+			a_delay.value = delay || null;
+			a_duration.value = duration || null;
+			a_direction.value = direction || null;
+			a_iterationCount.value = iterationCount || null;
+			a_timingFunction.value = timingFunction || null;
+		}
+
+		prefab.domRefresh();
+	});
+
 	return {
 		...prefab,
-		...expose,
-		obtainIcon
+		obtainIcon,
+		obtainFlip,
+		obtainIsFlipAndRotation
 	};
 };
-
-export { withIcon, IconProps };

@@ -1,3 +1,7 @@
+---
+sidebarDepth: 2
+---
+
 # <%= component.name %>
 
 <%= component.description %> 
@@ -5,31 +9,52 @@
 <% if (stable) { %>
 ## 插槽
 
-<div class="slots-table">
+<div class="content-table-wrap">
+<div class="content-table slots-table">
 
 <%- stable %>
     
+</div>
 </div>
 <% } %>
 
 <% if (ptable) { %>
 ## 属性
 
-<div class="props-table">
+<div class="content-table-wrap">
+<div class="content-table props-table">
 
 <%- ptable %>
 
 </div>
+</div>
+<% } %>
+
+<% if (rtables.length>0) { %>
+## 引用
+
+<% rtables.forEach(function(rtable){ %>
+### <%- rtable.title %>
+
+<div class="content-table-wrap">
+<div class="content-table refs-table">
+
+<%- rtable.body %>
+
+</div>
+</div>
+<% }); %>
+
 <% } %>
 
 <% if (mtable) { %>
 ## 方法
 
-<div class="methods-table">
+<div class="content-table-wrap">
+<div class="content-table methods-table">
 
 <%- mtable %>
 
 </div>
+</div>
 <% } %>
-
-

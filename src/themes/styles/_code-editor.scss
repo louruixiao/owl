@@ -1,0 +1,12 @@
+@import './mixins/config';
+@import './mixins/base';
+@import './mixins/func';
+@import './mixins/button';
+@import './var';
+
+@include b('code-editor') {
+	@include e(container) {
+		height: 100%;
+		width: 100%;
+	}
+}

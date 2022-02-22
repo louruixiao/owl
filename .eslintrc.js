@@ -1,9 +1,8 @@
 module.exports = {
 	root: true,
 	env: {
-		browser: true, //启用浏览器全局变量: window top
-		node: true, //启用node全局变量: __filename __dirname
-		es6: true //启用es6全局变量: Set Map
+		browser: true,
+		node: true
 	},
 	parser: 'vue-eslint-parser',
 	parserOptions: {
@@ -11,13 +10,26 @@ module.exports = {
 		ecmaVersion: 2020,
 		sourceType: 'module'
 	},
-	extends: ['eslint:recommended', 'plugin:vue/vue3-recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+	extends: [
+		'eslint:recommended', //eslint 推荐配置
+		'plugin:vue/vue3-recommended', // eslint-plugin-vue 插件提供的vue3推荐配置
+		'plugin:@typescript-eslint/recommended', //@typescript-eslint/eslint-plugin 插件提供的 typescript的推荐配置
+		'prettier',
+		'plugin:prettier/recommended'
+	],
 	rules: {
-		'@typescript-eslint/no-empty-function': 'off',
-		'no-console': 'warn',
-		'no-debugger': 'warn'
+		'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+		'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+		'prettier/prettier': ['error'],
+		'vue/html-closing-bracket-newline': [
+			'error',
+			{
+				singleline: 'never',
+				multiline: 'never'
+			}
+		],
+		'vue/max-attributes-per-line': 'off'
 	},
-	//为特定文件制定处理器
 	overrides: [
 		{
 			files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],

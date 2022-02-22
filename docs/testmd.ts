@@ -18,5 +18,5 @@ const result = renderMarkdown(
 			}
 		}
 	},
-	'/Users/congcong/Public/projects/yiird/owl/src/core/logic/logic-button.ts'
+	'/Users/congcong/Public/projects/yiird/owl/src/core/logic/logic-icon.ts'
 );

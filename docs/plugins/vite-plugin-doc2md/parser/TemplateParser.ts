@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { AbstractRegExpParser } from './AbstractParser';
 import { DocType, ExtractResult, SlotComment, Tag } from './types';
 
@@ -149,11 +150,11 @@ export class TemplateParser extends AbstractRegExpParser<TemplateComments> {
 					return matched && matched.length > 0;
 				});
 
-				let vBinds: Tag[] = [];
+				const vBinds: Tag[] = [];
 
 				if (vBindComments) {
 					vBindComments.forEach((vBindComment) => {
-						let vBindItems = vBindComment.replace(/\s{2}/g, ' ').match(vBindRegex);
+						const vBindItems = vBindComment.replace(/\s{2}/g, ' ').match(vBindRegex);
 						if (!vBindItems || vBindItems.length !== 5) {
 							return;
 						}

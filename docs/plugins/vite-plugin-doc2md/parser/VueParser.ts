@@ -1,7 +1,7 @@
 import { AbstractRegExpParser } from './AbstractParser';
 import { ScriptParser } from './ScriptParser';
 import { TemplateParser } from './TemplateParser';
-import { ExtractResult, Comment, ParserOptions } from './types';
+import { Comment, ExtractResult, ParserOptions } from './types';
 
 export interface VueComponent {
 	name: string;
@@ -10,6 +10,7 @@ export interface VueComponent {
 	methods?: Comment;
 	slots?: Comment;
 	setup?: Comment;
+	refs?: Comment[];
 }
 
 export class VueParser extends AbstractRegExpParser<VueComponent> {

@@ -1,0 +1,14 @@
+@import './mixins/config';
+@import './mixins/base';
+@import './mixins/func';
+@import './var';
+
+@include b(icon) {
+	vertical-align: middle;
+}
+
+@include b(button) {
+	@include b(icon) {
+		margin: auto 0.2rem;
+	}
+}

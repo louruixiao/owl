@@ -18,6 +18,17 @@ function chineseCharacterCount(str: string) {
 }
 
 const Style = {
+	link(str: string, url: string) {
+		return '[' + str + '](' + url + ')';
+	},
+	ref(str: string, data: any) {
+		if (data.refs) {
+			(data.refs as []).forEach((ref) => {
+				str += '<br>' + Style.link(ref['name'], ('#' + ref['name']).toLowerCase());
+			});
+		}
+		return str;
+	},
 	none(str: string) {
 		return str;
 	},
@@ -26,10 +37,45 @@ const Style = {
 	},
 	code(str: string) {
 		return str ? `\`${str}\`` : '';
+	},
+	inline(str: string) {
+		return str ? `<span style="white-space:nowrap">${str}</span>` : '';
+	},
+	color(str: string, color: string) {
+		return str ? `<span style="color:${color}">${str}</span>` : '';
+	},
+	required(str: string, flag: boolean) {
+		if (flag) {
+			str += '<sup class="required">必填</sup>';
+		}
+		return str;
 	}
 };
 
 const propTableHeader = {
+	name: {
+		title: '名称',
+		style: (str: string, data: any) => Style.required(Style.color(Style.bold(kebabCase(str)), '#1867c0'), data['required'])
+	},
+	description: {
+		title: '描述',
+		style: (str: string, data: any) => Style.none(Style.ref(str, data))
+	},
+	type: {
+		title: '类型',
+		style: (str) => Style.inline(Style.color(str, '#690'))
+	},
+	defaultValue: {
+		title: '默认值',
+		style: Style.none
+	},
+	values: {
+		title: '可选值',
+		style: Style.none
+	}
+};
+
+const refTableHeader = {
 	name: {
 		title: '名称',
 		style: (str: string) => {
@@ -42,11 +88,11 @@ const propTableHeader = {
 	},
 	type: {
 		title: '类型',
-		style: Style.none
+		style: Style.inline
 	},
 	defaultValue: {
 		title: '默认值',
-		style: Style.code
+		style: Style.none
 	},
 	values: {
 		title: '可选值',
@@ -96,7 +142,7 @@ function renderTable(header: any, data: any) {
 	//获取每列最宽的字符串个数
 	data.forEach((child: any) => {
 		for (const name in header) {
-			child[name] = header[name].style(child[name]);
+			child[name] = header[name].style(child[name], child);
 			const length = byteLength(' ' + child[name] + ' ');
 			if (child[name] && (!widths[name] || widths[name] < length)) {
 				widths[name] = length;
@@ -109,7 +155,7 @@ function renderTable(header: any, data: any) {
 	const hr: string[] = [];
 	for (const name in widths) {
 		const padCount = widths[name] - chineseCharacterCount(header[name].title);
-		tableHeader.push((header[name].title ?? '').padEnd(padCount, ' ') + ' ');
+		tableHeader.push(('<span>' + header[name].title + '</span>' ?? '').padEnd(padCount, ' ') + ' ');
 		hr.push(''.padEnd(widths[name], '-') + ' ');
 	}
 	rows.push(`| ${tableHeader.join('|')} |`);
@@ -128,6 +174,10 @@ function renderTable(header: any, data: any) {
 	});
 
 	return rows.join('\n');
+}
+
+function renderRefs(refs: any) {
+	return renderTable(refTableHeader, refs);
 }
 
 function renderProps(props: any) {
@@ -193,21 +243,31 @@ function renderSlots(slots: any) {
 
 export function render(options: ParserOptions, components: VueComponent[]): void {
 	components.forEach((component) => {
-		const { props, methods, setup, slots } = component;
+		const { props, methods, setup, slots, refs } = component;
 
 		const ptable = renderProps(props?.children);
+
+		const rtables: Array<object> = [];
+		if (refs) {
+			refs.forEach((ref) => {
+				rtables.push({
+					title: ref.name,
+					body: renderRefs(ref.children)
+				});
+			});
+		}
 
 		const mtable = renderMethods(methods?.children, setup?.children);
 
 		const stable = renderSlots(slots);
 
-		renderFile(path.resolve(__dirname, './tpl.ejs'), { component, ptable, mtable, stable }, (err, result) => {
+		renderFile(path.resolve(__dirname, './tpl.ejs'), { component, ptable, mtable, stable, rtables }, (err, result) => {
 			if (err) {
 				console.log(err);
 			}
 			if (result) {
 				if (options.renderOptions?.output) {
-					const destFile = path.join(options.root, options.renderOptions?.output, component.name + '.md');
+					const destFile = path.join(options.root, options.renderOptions?.output, kebabCase(component.name) + '-api.md');
 					fs.writeFileSync(destFile, result);
 				}
 			}

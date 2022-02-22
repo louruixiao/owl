@@ -59,28 +59,26 @@
 
 @mixin everySpan($count, $gutter) {
 	$spare: math.div($count, $count);
-
+	@for $i from 0 to $count {
+		$span: $i + 1;
+		$spanPer: math.div($span, $count);
+		& {
+			@include m($span) {
+				width: calc(#{$spanPer * 100}% - (#{$spanPer} + 1) * #{$gutter});
+				//min-width: calc(#{map-get($--breakpoints, $breakpoint)} * #{$spanPer} - (#{$spanPer} + 1) * #{$gutter});
+			}
+		}
+	}
 	@each $breakpoint in map-keys($--breakpoints) {
 		$next: breakpoint-next($breakpoint);
+
 		@include media-breakpoint-between($breakpoint, $next) {
 			@for $i from 0 to $count {
 				$span: $i + 1;
 				$spanPer: math.div($span, $count);
 				& {
-					@include m($span) {
+					@include m($breakpoint + '-' + $span) {
 						width: calc(#{$spanPer * 100}% - (#{$spanPer} + 1) * #{$gutter});
-						min-width: calc(#{map-get($--breakpoints, $breakpoint)} * #{$spanPer} - (#{$spanPer} + 1) * #{$gutter});
-					}
-					@if $breakpoint == xs {
-						@include m($span) {
-							width: calc(100% - (2 * #{$gutter}));
-							min-width: calc(100% - (2 * #{$gutter}));
-						}
-					} @else {
-						@include m($breakpoint + '-' + $span) {
-							width: calc(#{$spanPer * 100}% - (#{$spanPer} + 1) * #{$gutter});
-							min-width: calc(#{map-get($--breakpoints, $breakpoint)} * #{$spanPer} - (#{$spanPer} + 1) * #{$gutter});
-						}
 					}
 				}
 			}

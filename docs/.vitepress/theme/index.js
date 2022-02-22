@@ -1,19 +1,19 @@
 import { Owl } from '@yiird/owl';
-import DefaultTheme from 'vitepress/theme';
-import GridSystemDemo from '../components/GridSystemDemo.vue';
-import IconAnimateDemo from '../components/IconAnimateDemo.vue';
-import IconSizeDemo from '../components/IconSizeDemo.vue';
-import IconTypeDemo from '../components/IconTypeDemo.vue';
-import LayoutDemo from '../components/LayoutDemo.vue';
+import { defineAsyncComponent } from 'vue';
+import DefaultTheme from './default';
+import DocsLayout from './DocsLayout.vue';
 
 export default {
 	...DefaultTheme,
+	Layout: DocsLayout,
 	enhanceApp({ app }) {
+		const demos = import.meta.globEager('../components/*.vue');
+
+		Object.keys(demos).forEach(async (component) => {
+			const asyncComponent = defineAsyncComponent(() => import(/* @vite-ignore */ component));
+			app.component((component && component.split('/').pop()?.split('.')[0]) || '', asyncComponent);
+		});
+
 		app.use(Owl);
-		app.component('IconSizeDemo', IconSizeDemo);
-		app.component('IconTypeDemo', IconTypeDemo);
-		app.component('IconAnimateDemo', IconAnimateDemo);
-		app.component('GridSystemDemo', GridSystemDemo);
-		app.component('LayoutDemo', LayoutDemo);
 	}
 };

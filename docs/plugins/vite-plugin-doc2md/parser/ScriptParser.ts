@@ -8,14 +8,15 @@ import {
 	getJSDocPublicTag,
 	Identifier,
 	ImportDeclaration,
-	isArrayLiteralExpression,
 	isArrowFunction,
+	isAsExpression,
 	isBlock,
 	isCallExpression,
 	isExportAssignment,
 	isFunctionDeclaration,
 	isFunctionExpression,
 	isIdentifier,
+	isInterfaceDeclaration,
 	isJSDoc,
 	isJSDocParameterTag,
 	isJSDocPropertyTag,
@@ -23,20 +24,23 @@ import {
 	isMethodDeclaration,
 	isObjectLiteralExpression,
 	isPropertyAssignment,
+	isPropertySignature,
 	isSpreadAssignment,
 	isStringLiteral,
+	isTypeAliasDeclaration,
+	isTypeLiteralNode,
 	isVariableDeclaration,
 	JSDoc,
+	JSDocComment,
 	JSDocLink,
 	JSDocPropertyTag,
 	JSDocTag,
 	JSDocText,
 	MethodDeclaration,
+	NamedDeclaration,
 	Node,
 	NodeArray,
-	SourceFile,
-	SyntaxKind,
-	VariableDeclaration
+	SourceFile
 } from 'typescript';
 import { AbstractParser } from './AbstractParser';
 import { FileLoader } from './Loader';
@@ -48,6 +52,7 @@ export interface ScriptComments {
 	props: Comment;
 	methods: Comment;
 	setup: Comment;
+	refs?: Comment[];
 }
 
 type AssetsParserOptions = {
@@ -92,13 +97,13 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 	const result = new Array<Comment>();
 	if (!property) return [];
 	options.localVariables = getVariables(property);
-	if (isPropertyAssignment(property)) {
+	if (isPropertyAssignment(property) || isPropertySignature(property)) {
 		//处理属性定义
 		let comment: Comment;
 		const name = property.name.getText();
 		const jsDoc = getJsDocChild(property);
 		if (jsDoc) {
-			comment = parseComment(name, jsDoc);
+			comment = parseComment(name, jsDoc, options);
 		} else {
 			comment = {
 				description: '',
@@ -106,10 +111,12 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 				name: name
 			};
 		}
-		if (isStringLiteral(property.initializer)) {
-			comment.description = property.initializer.getText().replace(/\'/g, '');
-		} else {
-			comment.children = parseNode(property.initializer, options);
+		if (isPropertyAssignment(property)) {
+			if (isStringLiteral(property.initializer)) {
+				comment.description = property.initializer.getText().replace(/'/g, '');
+			} else {
+				comment.children = parseNode(property.initializer, options);
+			}
 		}
 
 		result.push(comment);
@@ -123,17 +130,8 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 		result.push(...parseNode(property.expression, options));
 	} else if (isIdentifier(property)) {
 		// 标识符
-		const identifier = property.getText().replace(/\'/g, '');
-		let variable = options.localVariables ? options.localVariables.get(identifier) || options.variables.get(identifier) : undefined;
-		if (variable) {
-			result.push(...parseNode(variable, options));
-		} else {
-			const comments = parsePropsFromImport(identifier, options);
-
-			if (comments) {
-				result.push(...comments);
-			}
-		}
+		const identifier = property.getText().replace(/'/g, '');
+		result.push(...parseByIdentifierName(identifier, options));
 	} else if (isMethodDeclaration(property) || isArrowFunction(property)) {
 		const jsDoc = getJsDocChild(property);
 		const name = property.name ? property.name.getText() : undefined;
@@ -150,7 +148,7 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 				tags.push(tag);
 			});
 
-			comment = parseComment(property.name.getText(), jsDoc);
+			comment = parseComment(property.name.getText(), jsDoc, options);
 			comment.tags?.push(...tags);
 			result.push(comment);
 		}
@@ -164,8 +162,8 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 				name: name!
 			};
 			if (isCallExpression(returnNode)) {
-				const name = returnNode.expression.getText().replace(/\'/g, '');
-				let variable = options.localVariables ? options.localVariables.get(name) || options.variables.get(name) : undefined;
+				const name = returnNode.expression.getText().replace(/'/g, '');
+				const variable = options.localVariables ? options.localVariables.get(name) || options.variables.get(name) : undefined;
 				if (variable) {
 					const methodComments = parseNode(variable, options);
 					comment.children = methodComments;
@@ -188,12 +186,73 @@ function parseNode(property: Node, options: AssetsParserOptions): Array<Comment>
 			const name = (<Identifier>property.expression.expression).text;
 			const jsDoc = getJsDocChild(property);
 			if (jsDoc) {
-				result.push(parseComment(name, jsDoc));
+				result.push(parseComment(name, jsDoc, options));
 			}
 		}
 	} else if (isVariableDeclaration(property)) {
 		if (property.initializer) {
 			result.push(...parseNode(property.initializer, options));
+		}
+	} else if (isInterfaceDeclaration(property)) {
+		//处理属性定义
+		const comment = initComment(property, options);
+		comment.name = property.name.getText();
+		if (property.members) {
+			property.members.forEach((member) => {
+				comment.children = comment.children || [];
+				comment.children.push(...parseNode(member, options));
+			});
+		}
+
+		result.push(comment);
+	} else if (isTypeAliasDeclaration(property)) {
+		//处理属性定义
+		const comment = initComment(property, options);
+		comment.name = property.name.getText();
+		if (isTypeLiteralNode(property.type)) {
+			property.type.members.forEach((member) => {
+				comment.children = comment.children || [];
+				comment.children.push(...parseNode(member, options));
+			});
+		}
+
+		result.push(comment);
+	}
+	return result;
+}
+
+function initComment(property: NamedDeclaration, options: AssetsParserOptions): Comment {
+	//处理属性定义
+	let comment: Comment;
+	const name = property.name!.getText();
+	const jsDoc = getJsDocChild(property);
+	if (jsDoc) {
+		comment = parseComment(name, jsDoc, options);
+	} else {
+		comment = {
+			description: '',
+			isPrivate: false,
+			name: name
+		};
+	}
+	return comment;
+}
+
+/**
+ * 根据标识符名称获取注释
+ * @param property
+ * @param options
+ */
+function parseByIdentifierName(identifier: string, options: AssetsParserOptions): Array<Comment> {
+	const result = new Array<Comment>();
+	const variable = options.localVariables ? options.localVariables.get(identifier) || options.variables.get(identifier) : undefined;
+	if (variable) {
+		result.push(...parseNode(variable, options));
+	} else {
+		const comments = parsePropsFromImport(identifier, options);
+
+		if (comments) {
+			result.push(...comments);
 		}
 	}
 	return result;
@@ -260,6 +319,18 @@ function parseSetupMethodsFromImport(importIdentifier: string, options: AssetsPa
 	}
 }
 
+function parseRefsFromImport(importIdentifier: string, options: AssetsParserOptions): Comment[] | undefined {
+	const opt = {
+		...options,
+		selector: `InterfaceDeclaration[name.name = '${importIdentifier}'],TypeAliasDeclaration[name.name = '${importIdentifier}']`
+	};
+
+	const sourceAst = getAstFromImport(importIdentifier, opt);
+	if (sourceAst) {
+		return parserTs(sourceAst, opt);
+	}
+}
+
 function getJsDocChild(property: Node): JSDoc | undefined {
 	const jsDoc = property.getChildren().find((child) => {
 		if (isJSDoc(child)) {
@@ -269,7 +340,7 @@ function getJsDocChild(property: Node): JSDoc | undefined {
 	return jsDoc as JSDoc;
 }
 
-function parseComment(name: string, jsDoc: JSDoc): Comment {
+function parseComment(name: string, jsDoc: JSDoc, options: AssetsParserOptions): Comment {
 	const originalTags = jsDoc.tags;
 	const tags: Tag[] = [];
 	originalTags?.forEach((originalTag: JSDocTag) => {
@@ -286,6 +357,18 @@ function parseComment(name: string, jsDoc: JSDoc): Comment {
 	};
 	const isProp = tags.find((tag) => tag.tagName === 'prop');
 	const isMethod = tags.find((tag) => tag.tagName === 'method');
+	const hasRefs = tags.filter((tag) => tag.tagName === 'ref');
+
+	if (hasRefs && hasRefs.length > 0) {
+		hasRefs.forEach((hasRef: Tag) => {
+			if (hasRef.description) {
+				comment.refs = comment.refs || [];
+				const comm = parseFromRef(hasRef.description.trim(), options);
+				comment.refs.push(...comm);
+			}
+		});
+	}
+
 	if (isMethod) {
 		return transformMethodComment(comment, tags, jsDoc);
 	}
@@ -296,7 +379,20 @@ function parseComment(name: string, jsDoc: JSDoc): Comment {
 
 	return comment;
 }
+function parseFromRef(refName: string, options: AssetsParserOptions): Comment[] {
+	const result = new Array<Comment>();
+	const variable = options.localVariables ? options.localVariables.get(refName) || options.variables.get(refName) : undefined;
+	if (variable) {
+		result.push(...parseNode(variable, options));
+	} else {
+		const comments = parseRefsFromImport(refName, options);
 
+		if (comments) {
+			result.push(...comments);
+		}
+	}
+	return result;
+}
 /**
  * 解析注释中的标签
  * @param originalTag 注释中的标签 例如 @prop @private 等
@@ -321,7 +417,7 @@ function parseTag(originalTag: JSDocTag): Tag {
 	return tag;
 }
 
-function parseDescription(description: String | NodeArray<JSDocText | JSDocLink> | undefined): string {
+function parseDescription(description: string | NodeArray<JSDocComment> | undefined): string {
 	if (description !== undefined) {
 		if (typeof description === 'string') {
 			return description.replace('\n', '<br>');
@@ -342,7 +438,7 @@ function transformPropComment(comment: Comment, tags: Tag[], jsDoc: JSDoc): Prop
 		required: false,
 		...comment
 	};
-	//const defaultTag = tags.find((tag) => tag.tagName === 'default');
+
 	if (valuesTag) {
 		propComment.values = valuesTag.description;
 	}
@@ -350,9 +446,12 @@ function transformPropComment(comment: Comment, tags: Tag[], jsDoc: JSDoc): Prop
 	const defaultValue = getPropInfo(jsDoc, 'default');
 	const required = getPropInfo(jsDoc, 'required');
 	const type = getPropInfo(jsDoc, 'type');
+
 	if (defaultValue) {
 		propComment.defaultValue = defaultValue;
-		propComment.type = type;
+	}
+	if (type) {
+		propComment.type = type.replace('[', '').replace(']', ''); //'`' + type.replace('[', '').replace(']', '').split(',').join('` `') + '`';
 	}
 	if (required) {
 		propComment.required = new Boolean(required).valueOf();
@@ -368,8 +467,8 @@ function transformPropComment(comment: Comment, tags: Tag[], jsDoc: JSDoc): Prop
  * @returns
  */
 function transformMethodComment(comment: Comment, tags: Tag[], jsDoc: JSDoc): MethodComment {
-	let method = jsDoc.parent;
-	let methodComment: MethodComment = {
+	const method = jsDoc.parent;
+	const methodComment: MethodComment = {
 		kind: DocType.METHOD,
 		syntax: [],
 		parameters: tags.filter((tag) => tag.tagName === 'param'),
@@ -396,27 +495,28 @@ function isFunctionNode(node: Node): node is MethodDeclaration | FunctionDeclara
 }
 
 function getPropInfo(jsDoc: Node, keyword: string) {
-	const selector = transSelector(`
-	ObjectLiteralExpression  > [name.name="${keyword}"] > *:last-child
-	`);
-	const nodes = tsquery(jsDoc.parent, selector, {
+	const selector = transSelector(`ObjectLiteralExpression >  ObjectLiteralExpression Identifier[name=${keyword}] ~ *:last-child`);
+	let nodes = tsquery(jsDoc.parent, selector, {
 		visitAllChildren: true
 	});
+	if (keyword === 'type' && nodes.length === 0) {
+		const selector = transSelector(`AsExpression`);
+		nodes = tsquery(jsDoc.parent, selector, {
+			visitAllChildren: true
+		});
+	}
 	const node = nodes[0];
-	if (!node) return node;
-	if (
-		node.kind === SyntaxKind.TrueKeyword ||
-		node.kind === SyntaxKind.FalseKeyword ||
-		node.kind === SyntaxKind.StringLiteral ||
-		isObjectLiteralExpression(node) ||
-		isArrayLiteralExpression(node)
-	) {
-		return node.getText();
+
+	if (!node) return '';
+	if (isAsExpression(node)) {
+		return node.getChildAt(0).getText();
 	} else if (isFunctionExpression(node) || isBlock(node) || isArrowFunction(node)) {
 		return returnStatement(node)
 			.getText()
 			.replace(/\n{2}/g, '<br>')
-			.replace(/[\n|\t]*/g, '');
+			.replace(/[\n|\t]*/g, ' ');
+	} else {
+		return node.getText();
 	}
 }
 
@@ -425,7 +525,7 @@ function getImporters(ast: SourceFile): Map<string, string> {
 	const nodes = tsquery(ast, selector);
 	const map = new Map<string, string>();
 	nodes.map((node) => {
-		const importer = (<ImportDeclaration>node).moduleSpecifier.getText().replace(/[\s|\'|\"]/g, '');
+		const importer = (<ImportDeclaration>node).moduleSpecifier.getText().replace(/[\s|'|"]/g, '');
 		tsquery(node, 'ImportClause Identifier').forEach((nameNode) => {
 			if (isIdentifier(nameNode)) {
 				map.set(nameNode.getText(), importer);
@@ -436,14 +536,19 @@ function getImporters(ast: SourceFile): Map<string, string> {
 }
 
 function getVariables(ast: SourceFile | Node): Map<string, Node> {
-	const selector = 'VariableDeclaration';
+	const selector = 'VariableDeclaration,InterfaceDeclaration';
 	const nodes = tsquery(ast, selector);
 	const map = new Map<string, Node>();
 	nodes.map((node) => {
-		const name = (<VariableDeclaration>node).name.getText().trim();
-		const variable = (<VariableDeclaration>node).initializer;
-		if (variable) {
-			map.set(name, variable);
+		if (isInterfaceDeclaration(node)) {
+			const name = node.name.getText().trim();
+			map.set(name, node);
+		} else if (isVariableDeclaration(node)) {
+			const name = node.name.getText().trim();
+			const variable = node.initializer;
+			if (variable) {
+				map.set(name, variable);
+			}
 		}
 	});
 	return map;
@@ -490,9 +595,7 @@ export class ScriptParser extends AbstractParser<ScriptComments> {
 
 		const exportComments = parserTs(ast, {
 			...finalOptions,
-			selector: `
-            ExportAssignment
-        `
+			selector: `ExportAssignment`
 		});
 
 		const scriptNode: ScriptComments = {
@@ -522,6 +625,14 @@ export class ScriptParser extends AbstractParser<ScriptComments> {
 				}
 			}
 		});
+		if (scriptNode.props.children) {
+			scriptNode.props.children.forEach((child) => {
+				scriptNode.refs = scriptNode.refs || [];
+				if (child.refs) {
+					scriptNode.refs.push(...child.refs);
+				}
+			});
+		}
 		return scriptNode;
 	}
 	rest(): boolean {

@@ -1,119 +1,119 @@
 @mixin button-size($size-map) {
-    @each $modifier, $item in $size-map {
-        $-height: nth($item, 1);
-        $-font-size: nth($item, 2);
-        $-padding: nth($item, 3);
-        @include m($modifier) {
-            height: $-height;
-            line-height: $-height;
-            padding: $-padding;
-            font-size: $-font-size;
-            @if $-font-size < 1rem {
-                > * {
-                    zoom: 0.9;
-                }
-            }
-        }
-    }
+	@each $modifier, $item in $size-map {
+		$-height: nth($item, 1);
+		$-font-size: nth($item, 2);
+		$-padding: nth($item, 3);
+		@include m($modifier) {
+			height: $-height;
+			line-height: calc($-height - 2px);
+			padding: $-padding;
+			font-size: $-font-size;
+			@if $-font-size < 1.5rem {
+				zoom: 0.9;
+			}
+		}
+	}
 }
 
 @mixin button-color($color-map) {
-    @each $modifier, $color in $color-map {
-        @include m($modifier) {
-            border: 1px solid var($color);
-            background-color: var($color);
-            color: white;
-            &:active,
-            &.active,
-            &.is-active {
-                color: var($color + '-darker');
-            }
-        }
-    }
-    @each $modifier, $color in $color-map {
-        @include m($modifier + '--light') {
-            border: 1px solid var($color + '-lighter');
-            background-color: var($color + '-lightest');
-            color: var($color);
-            &:active,
-            &.active,
-            &.is-active {
-                color: var($color + '-darker');
-            }
-        }
-    }
+	@each $modifier, $color in $color-map {
+		@include m($modifier) {
+			border: 1px solid var($color);
+			background-color: var($color);
+			color: white;
+			&:active,
+			&.active,
+			&.is-active {
+				@debug $color;
+				color: var($color + '-darker');
+			}
+		}
+	}
+	@each $modifier, $color in $color-map {
+		@include m($modifier + '--light') {
+			border: 1px solid var($color + '-lighter');
+			background-color: var($color + '-lightest');
+			color: var($color);
+			&:active,
+			&.active,
+			&.is-active {
+				color: var($color + '-darker');
+			}
+		}
+	}
 
 	@each $modifier, $color in $color-map {
-        @include m($modifier + '--empty') {
-            border: 1px solid var($color + '-lighter');
-            background-color: transparent;
-            color: var($color);
-            &:active,
-            &.active,
-            &.is-active {
-                color: var($color + '-darker');
-            }
-        }
-    }
+		@include m($modifier + '--empty') {
+			border: 1px solid var($color + '-lighter');
+			background-color: transparent;
+			color: var($color);
+			&:active,
+			&.active,
+			&.is-active {
+				color: var($color + '-darker');
+			}
+		}
+	}
 
 	@each $modifier, $color in $color-map {
-        @include m($modifier + '--link') {
-            border: 1px solid transparent;
-            background-color: transparent;
-            color: var($color);
-            &:active,
-            &.active,
-            &.is-active {
-                color: var($color + '-darker');
-            }
-        }
-    }
+		@include m($modifier + '--link') {
+			border: 1px solid transparent;
+			background-color: transparent;
+			color: var($color);
+			text-decoration: underline;
+			&:active,
+			&.active,
+			&.is-active {
+				color: var($color + '-darker');
+			}
+		}
+	}
 }
 
 //(circle square fillet),
 @mixin button-circle($size-map) {
-    @include m(circle) {
-        @each $modifier, $item in $size-map {
-            $-size: nth($item, 1);
-            &.#{$B} {
-                @include m($modifier) {
-                    border-radius: $-size;
-                    width: $-size;
-                    height: $-size;
-                    //line-height: unset !important;
-                    padding: 0;
-                }
-            }
-        }
-    }
+	@include m(circle) {
+		@each $modifier, $item in $size-map {
+			$-size: nth($item, 1);
+			&.#{$B} {
+				@include m($modifier) {
+					border-radius: $-size;
+					width: $-size;
+					height: $-size;
+					//line-height: unset !important;
+					padding: 0;
+				}
+			}
+		}
+	}
 }
 
 @mixin button-square($size-map) {
-    @include m(square) {
-        @each $modifier, $item in $size-map {
-            $-size: nth($item, 1);
-            &.#{$B} {
-                @include m($modifier) {
-                    border-radius: 0;
-                    width: $-size;
-                    height: $-size;
-                    //line-height: unset !important;
-                    padding: 0;
-                }
-            }
-        }
-    }
+	@include m(square) {
+		@each $modifier, $item in $size-map {
+			$-size: nth($item, 1);
+			&.#{$B} {
+				@include m($modifier) {
+					border-radius: 0;
+					width: $-size;
+					height: $-size;
+					//line-height: unset !important;
+					padding: 0;
+				}
+			}
+		}
+	}
 }
 
 @mixin button-ellipse($size-map) {
-    @include m(ellipse) {
-        @each $modifier, $item in $size-map {
-            $-size: nth($item, 1);
-            &.#{$B} {
-                @include m($modifier) {
-                    border-radius: $-size;
-                }
-            }
-        }
-    }
+	@include m(ellipse) {
+		@each $modifier, $item in $size-map {
+			$-size: nth($item, 1);
+			&.#{$B} {
+				@include m($modifier) {
+					border-radius: $-size;
+				}
+			}
+		}
+	}
 }

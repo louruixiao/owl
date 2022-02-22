@@ -1,5 +1,5 @@
-import { faHeart, faHeartbeat } from '@fortawesome/free-solid-svg-icons';
-import { addIcon, Owl } from '@owl';
+import { faHeart, faHeartbeat } from '@fortawesome/pro-solid-svg-icons';
+import { addIcon, Owl } from '@owl/index';
 import '@owl/themes/styles/index.scss';
 import { createApp } from 'vue';
 import App from './App.vue';

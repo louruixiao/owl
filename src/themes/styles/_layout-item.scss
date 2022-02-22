@@ -1,0 +1,50 @@
+@use 'sass:math';
+@import './mixins/config';
+@import './mixins/base';
+@import './mixins/layout';
+
+@import './var';
+@include b('layout') {
+	$gutter-h: _var('gutter-h');
+	$gutter-v: _var('gutter-v');
+
+	/* column 布局 */
+
+	@include m((column-12, column-24)) {
+		& > {
+			@include b('layout-item') {
+				float: left;
+				margin-top: #{$gutter-h};
+				margin-left: #{$gutter-v};
+			}
+		}
+	}
+
+	@include m(column-12) {
+		//总列数
+		$count: 12;
+		//每列占总宽度百分比
+		$per: math.div(1, $count) * 100;
+		$spare: math.div($count + 1, $count);
+
+		& > {
+			@include b('layout-item') {
+				@include everySpan($count, $gutter-v);
+			}
+		}
+	}
+
+	@include m(column-24) {
+		//总列数
+		$count: 24;
+		//每列占总宽度百分比
+		$per: math.div(1, $count) * 100;
+		$spare: math.div($count + 1, $count);
+
+		& > {
+			@include b('layout-item') {
+				@include everySpan($count, $gutter-h);
+			}
+		}
+	}
+}
