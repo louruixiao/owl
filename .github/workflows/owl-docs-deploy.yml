@@ -27,7 +27,7 @@ jobs:
                   registry-url: https://npm.fontawesome.com
                   scope: '@fortawesome'
             - name: Install dependencies
-              run: yarn install
+              run: yarn
               env:
                   FONTAWESOME_NPM_AUTH_TOKEN: ${{secrets.FONTAWESOME_NPM_AUTH_TOKEN}}
             - name: Build Docs
