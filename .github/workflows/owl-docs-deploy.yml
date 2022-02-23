@@ -25,12 +25,9 @@ jobs:
             - uses: actions/setup-node@v2
               with:
                   node-version: '16.x'
-            - env:
+            - run: npm install && npm run docs:build
+              env:
                   FONTAWESOME_NPM_AUTH_TOKEN: ${{env.FONTAWESOME_NPM_AUTH_TOKEN}}
-              run: |
-                  echo "FONTAWESOME_NPM_AUTH_TOKEN=$FONTAWESOME_NPM_AUTH_TOKEN"
-                  npm install
-                  npm run docs:build
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@4.1.4
               with:
