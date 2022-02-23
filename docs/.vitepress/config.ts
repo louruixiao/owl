@@ -10,7 +10,7 @@ export default defineConfig({
 	lang: 'zh-CN',
 	title: 'Gavin UI',
 	description: '',
-	base: '/',
+	base: '/owl/',
 	vue: {
 		template: {
 			compilerOptions: {
