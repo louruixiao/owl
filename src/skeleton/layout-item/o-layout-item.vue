@@ -5,7 +5,7 @@
 	</div>
 </template>
 <script lang="ts">
-import { LayoutItemProps, withLayoutItem } from '@owl/core';
+import { LayoutItemProps, withLayoutItem } from '@owl/core/logic/logic-layout-item';
 import { defineComponent } from 'vue';
 export default defineComponent({
 	name: 'OLayoutItem',

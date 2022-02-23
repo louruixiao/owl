@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 
 function resolve(filePath: string): string {
 	return path.join(__dirname, filePath);
@@ -12,32 +11,45 @@ function resolve(filePath: string): string {
 export default defineConfig({
 	base: './',
 	publicDir: './public',
-	root: process.env.NODE_ENV === 'production' ? '.' : './src-example',
+	root: process.env.NODE_ENV === 'production' ? './src' : './src-example',
 	mode: 'development',
 	clearScreen: false,
 	build: {
 		target: 'es2015',
 		outDir: resolve('./dist/es'),
+		emptyOutDir: true,
+		lib: {
+			entry: resolve('./src/index.ts'),
+			name: 'Owl',
+			formats: ['es', 'cjs', 'umd'],
+			fileName: (format) => `owl.${format}.js`
+		},
 		rollupOptions: {
-			input: {
-				owl: resolve('./src/index.ts')
-			},
 			// 确保外部化处理那些你不想打包进库的依赖
-			external: ['vue'],
+			external: ['vue', '@fortawesome/fontawesome-svg-core', '@fortawesome/vue-fontawesome'],
 			output: {
-				dir: resolve('./dist/es'),
-				entryFileNames: '[name].js',
-				chunkFileNames: '[name].js',
-				name: 'Owl',
-				format: 'es',
-				sourcemap: true,
-				manualChunks: {
-					'fortawesome-brands': ['@fortawesome/free-brands-svg-icons'],
-					'fortawesome-solid': ['@fortawesome/free-solid-svg-icons']
-				},
+				dir: resolve('./dist'),
+				// entryFileNames: '[name].js',
+				//chunkFileNames: '[name]-[format]-[hash].js',
+				// name: 'Owl',
+				// format: 'es',
+				// sourcemap: true,
+				// manualChunks: {
+				// 	fontawesome: ['@fortawesome/fontawesome-svg-core', '@fortawesome/vue-fontawesome']
+				// },
 				globals: {
-					vue: 'Vue'
+					vue: 'Vue',
+					'@fortawesome/fontawesome-svg-core': 'fontawesome-svg-core',
+					'@fortawesome/vue-fontawesome': 'vue-fontawesome'
 				}
+			}
+		}
+	},
+	css: {
+		postcss: './postcss.config.js',
+		preprocessorOptions: {
+			scss: {
+				charset: false
 			}
 		}
 	},
@@ -55,7 +67,6 @@ export default defineConfig({
 				}
 			}
 		}),
-		vueJsx(),
-		dts()
+		vueJsx()
 	]
 });

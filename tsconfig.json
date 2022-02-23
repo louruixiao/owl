@@ -11,20 +11,16 @@
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-		"types": ["vite/client", "vitepress", "node", "webpack"],
+		"types": ["vite/client", "node", "webpack"],
 		"baseUrl": ".",
-		"paths": { "@owl/*": ["./src/*"], "@yiird/owl": ["./src/index"] },
-		"rootDirs": ["src/*", "src-example/src/*", "docs/*"]
+		"paths": { "@owl/*": ["./src/*"] },
+		"rootDirs": ["src/*", "src-example/src/*"]
 	},
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.tsx",
 		"src/**/*.vue",
-		"docs/.vitepress/**/*.ts",
-		"docs/.vitepress/**/*.d.ts",
-		"docs/.vitepress/**/*.tsx",
-		"docs/.vitepress/**/*.vue",
 		"src-example/src/**/*.ts",
 		"src-example/src/**/*.d.ts",
 		"src-example/src/**/*.tsx",

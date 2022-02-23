@@ -24,7 +24,6 @@
 			&:active,
 			&.active,
 			&.is-active {
-				@debug $color;
 				color: var($color + '-darker');
 			}
 		}

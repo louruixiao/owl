@@ -1,8 +1,8 @@
 import { computed, ExtractPropTypes, getCurrentInstance, handleError, inject, PropType } from 'vue';
-import { ParentOptions } from '..';
 import { OComponentInstance, OPrefabDefine, OPrefabExpose, OPrefabOptionsDefine, OPrefabPrivate } from '../../types/base-define';
 import { BaseProps } from '../props/base-props';
 import { withPrefab } from '../withPrefab';
+import { ParentOptions } from './logic-layout';
 
 interface ColumnOptions {
 	/**

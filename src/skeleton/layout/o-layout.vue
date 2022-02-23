@@ -5,7 +5,7 @@
 	</div>
 </template>
 <script lang="ts">
-import { LayoutProps, withLayout } from '@owl/core';
+import { LayoutProps, withLayout } from '@owl/core/logic/logic-layout';
 import { defineComponent } from 'vue';
 
 /**

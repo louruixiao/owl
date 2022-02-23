@@ -1,13 +1,29 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
 import path from 'path';
-import {
+import pkg, {
 	ArrowFunction,
 	FunctionDeclaration,
 	FunctionExpression,
-	getJSDocPrivateTag,
-	getJSDocPublicTag,
 	Identifier,
 	ImportDeclaration,
+	JSDoc,
+	JSDocComment,
+	JSDocLink,
+	JSDocPropertyTag,
+	JSDocTag,
+	JSDocText,
+	MethodDeclaration,
+	NamedDeclaration,
+	Node,
+	NodeArray,
+	SourceFile
+} from 'typescript';
+import { AbstractParser } from './AbstractParser';
+import { FileLoader } from './Loader';
+import { Comment, DocType, MethodComment, ParserOptions, PropComment, Tag } from './types';
+const {
+	getJSDocPrivateTag,
+	getJSDocPublicTag,
 	isArrowFunction,
 	isAsExpression,
 	isBlock,
@@ -29,22 +45,8 @@ import {
 	isStringLiteral,
 	isTypeAliasDeclaration,
 	isTypeLiteralNode,
-	isVariableDeclaration,
-	JSDoc,
-	JSDocComment,
-	JSDocLink,
-	JSDocPropertyTag,
-	JSDocTag,
-	JSDocText,
-	MethodDeclaration,
-	NamedDeclaration,
-	Node,
-	NodeArray,
-	SourceFile
-} from 'typescript';
-import { AbstractParser } from './AbstractParser';
-import { FileLoader } from './Loader';
-import { Comment, DocType, MethodComment, ParserOptions, PropComment, Tag } from './types';
+	isVariableDeclaration
+} = pkg;
 
 export interface ScriptComments {
 	name: string;

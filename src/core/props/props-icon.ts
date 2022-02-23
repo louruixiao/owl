@@ -14,7 +14,7 @@ export const IconProps = {
 		required: true
 	},
 	/**
-	 * [图片风格](/owl/guide/IconType.html#风格)
+	 * [图片风格](/guide/IconType.html#风格)
 	 * @prop
 	 * @values `fas`：solid 实体 <br> `fal`：light 清淡的<br> `far`：regular 常规的<br> `fad`：duotone 双色调<br> `fat`：thin 细的<br> `fab`：brands 品牌标识
 	 */

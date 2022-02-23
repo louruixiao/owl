@@ -63,7 +63,7 @@ const propTableHeader = {
 	},
 	type: {
 		title: '类型',
-		style: (str) => Style.inline(Style.color(str, '#690'))
+		style: (str: string) => Style.inline(Style.color(str, '#690'))
 	},
 	defaultValue: {
 		title: '默认值',

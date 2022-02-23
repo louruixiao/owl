@@ -1,13 +1,11 @@
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
-import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vitepress';
 import { extractCommentsPlugin } from '../plugins/vite-plugin-doc2md';
 
 function resolve(filePath: string): string {
 	return path.join(__dirname, filePath);
 }
-console.log(path.resolve(__dirname, '../../'));
 export default defineConfig({
 	lang: 'zh-CN',
 	title: 'Gavin UI',
@@ -24,19 +22,23 @@ export default defineConfig({
 		clearScreen: false,
 		resolve: {
 			alias: {
-				'@owl': resolve('../../src/'),
-				'@yiird/owl': resolve('../../src/')
+				'@yiird/owl': resolve('../../')
 			}
 		},
-		optimizeDeps: {
-			exclude: ['java']
+		css: {
+			postcss: '../../postcss.config.js',
+			preprocessorOptions: {
+				scss: {
+					charset: false
+				}
+			}
 		},
 		plugins: [
 			vueJsx(),
 			extractCommentsPlugin({
 				root: path.resolve(__dirname, '../../'),
 				renderOptions: {
-					output: './docs/components'
+					output: './docs/coms'
 				},
 				loaderOptions: {
 					scanDirs: 'src',
@@ -45,8 +47,7 @@ export default defineConfig({
 						'@owl': resolve('../../src/')
 					}
 				}
-			}),
-			dts()
+			})
 		]
 	},
 	locales: {
@@ -82,8 +83,8 @@ export default defineConfig({
 					{ text: '指南', link: '/guide/', activeMatch: '^/$|^/guide/' },
 					{
 						text: '组件',
-						link: '/components/o-button-api',
-						activeMatch: '^/components/'
+						link: '/coms/o-button-api',
+						activeMatch: '^/coms/'
 					},
 					{
 						text: '样例',
@@ -93,7 +94,7 @@ export default defineConfig({
 				],
 				sidebar: {
 					'/guide/': getGuideSidebar(),
-					'/components/': getComponentsSidebar(),
+					'/coms/': getComponentsSidebar(),
 					'/examples/': getExampleSidebar()
 				}
 			}
@@ -137,8 +138,8 @@ function getComponentsSidebar() {
 		{
 			text: '基础组件',
 			children: [
-				{ text: 'OIcon', link: '/components/o-icon-api' },
-				{ text: 'OButton', link: '/components/o-button-api' }
+				{ text: 'OIcon', link: '/coms/o-icon-api' },
+				{ text: 'OButton', link: '/coms/o-button-api' }
 			]
 		}
 	];
@@ -150,8 +151,7 @@ function getExampleSidebar() {
 			children: [
 				{ text: '按钮', link: '/examples/button' },
 				{ text: 'OIcon', link: '/examples/icon' },
-				{ text: '布局', link: '/examples/layout' },
-				{ text: '代码编辑器', link: '/examples/code-editor' }
+				{ text: '布局', link: '/examples/layout' }
 			]
 		}
 	];
