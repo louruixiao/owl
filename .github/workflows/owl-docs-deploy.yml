@@ -28,6 +28,7 @@ jobs:
             - env:
                   FONTAWESOME_NPM_AUTH_TOKEN: ${{env.FONTAWESOME_NPM_AUTH_TOKEN}}
               run: |
+                  echo "FONTAWESOME_NPM_AUTH_TOKEN=$FONTAWESOME_NPM_AUTH_TOKEN"
                   npm install
                   npm run docs:build
             - name: Deploy 🚀
