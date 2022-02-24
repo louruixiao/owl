@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/louruixiao/owl/compare/v0.0.7...v0.0.8) (2022-02-24)
+
+
+### Features
+
+* **自动化构建:** 自动化构建——release ([9d31726](https://github.com/louruixiao/owl/commit/9d31726919535f149d68397c51dcf9752ec85484))
+
 ### [0.0.7](https://github.com/louruixiao/owl/compare/v0.0.6...v0.0.7) (2022-02-24)
 
 ### [0.0.6](https://github.com/louruixiao/owl/compare/v0.0.5...v0.0.6) (2022-02-24)
