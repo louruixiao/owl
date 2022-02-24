@@ -27,11 +27,13 @@ jobs:
                   registry-url: https://npm.fontawesome.com
                   scope: '@fortawesome'
             - name: Install dependencies
-              run: npm install
+              run: yarn
               env:
                   FONTAWESOME_NPM_AUTH_TOKEN: ${{secrets.FONTAWESOME_NPM_AUTH_TOKEN}}
+            - name: Build Owl
+              run: yarn build
             - name: Build Docs
-              run: npm run docs:build
+              run: yarn docs:build
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@4.1.4
               with:
