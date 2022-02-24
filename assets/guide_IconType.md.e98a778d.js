@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./app.f75c35c2.js";const f='{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/IconType.md"}',o={};function r(c,n,s,p,_,i){return a(),t("div")}var l=e(o,[["render",r]]);export{f as __pageData,l as default};

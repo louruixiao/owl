@@ -1,0 +1,1 @@
+import{_ as t,c as d,o as e,b as s}from"./app.f75c35c2.js";const w='{"title":"OIcon","description":"","frontmatter":{"sidebarDepth":2},"headers":[{"level":2,"title":"\u5C5E\u6027","slug":"\u5C5E\u6027"}],"relativePath":"coms/o-icon-api.md"}',o={},a=s("",7),n=[a];function r(c,p,l,i,y,h){return e(),d("div",null,n)}var f=t(o,[["render",r]]);export{w as __pageData,f as default};

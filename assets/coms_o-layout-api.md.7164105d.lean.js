@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as a,b as o}from"./app.f75c35c2.js";const b='{"title":"OLayout","description":"","frontmatter":{"sidebarDepth":2},"headers":[{"level":2,"title":"\u63D2\u69FD","slug":"\u63D2\u69FD"}],"relativePath":"coms/o-layout-api.md"}',d={},r=o("",7),s=[r];function n(c,l,i,_,h,p){return a(),e("div",null,s)}var f=t(d,[["render",n]]);export{b as __pageData,f as default};
