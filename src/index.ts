@@ -31,6 +31,6 @@ const addIcon = (...definitions: (IconDefinition | IconPack)[]): void => {
 export { addClass } from '@owl/utils/dom';
 export { install, addIcon };
 
-export const Owl = {
+export default {
 	install
 };
