@@ -1,9 +1,11 @@
 {
 	"name": "@yiird/owl",
 	"repository": "git+https://github.com/louruixiao/owl.git",
+	"homepage": "https://louruixiao.github.io/owl/",
 	"author": "Gavin Lou",
 	"license": "MIT",
-	"version": "0.0.1",
+	"version": "0.0.2",
+	"private": false,
 	"types": "dist/owl.d.ts",
 	"files": [
 		"dist"
