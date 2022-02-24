@@ -4,7 +4,7 @@
 	"homepage": "https://louruixiao.github.io/owl/",
 	"author": "Gavin Lou",
 	"license": "MIT",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"private": false,
 	"types": "dist/owl.d.ts",
 	"files": [
@@ -26,7 +26,7 @@
 		"docs:build": "vitepress build docs",
 		"docs:serve": "vitepress serve docs",
 		"commit": "cz",
-		"relase": "standard-version && git push --follow-tags origin main && npm publish",
+		"relase": "yarn build && standard-version && git push --follow-tags origin main && npm publish",
 		"build:style": "webpack --config build/webpack.style.ts",
 		"build:u": "NODE_ENV=production webpack --config build/webpack.umd.ts",
 		"build:c": "NODE_ENV=production webpack --config build/webpack.cjs.ts",
